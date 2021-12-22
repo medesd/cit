@@ -1,5 +1,6 @@
 package com.planning.api.main.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,7 +24,17 @@ public class Facture {
     @Column(columnDefinition = "Text")
     private String data;
     private float totalPrix;
+    private String etatReg;
+    private String enhance;
+    private Date dateReg;
+    private String modeReg;
+    @Column(columnDefinition = "Text")
+    private String observation;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Project project;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "facture", cascade = CascadeType.ALL)
+    private Fac02 fac02;
 }

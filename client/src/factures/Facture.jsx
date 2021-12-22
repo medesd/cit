@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Form, Input, InputNumber, Select} from "antd";
+import {DatePicker, Form, Input, InputNumber, Radio, Select} from "antd";
 import Button from "antd-button-color";
 import axios from "axios";
 import {ArrowLeftOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
@@ -10,6 +10,7 @@ import {CutDonnes, SplitNumber} from "../tools";
 import {bindActionCreators} from "redux";
 import * as types from "../redux/actions/actions";
 import {connect} from "react-redux";
+import moment from "moment";
 
 const {Option} = Select;
 
@@ -96,13 +97,13 @@ const Facture = (props) => {
                     wrapperCol={{span: 12}}
                     onFinish={() => {
                         setState(f => ({...f, donnesPerElement: []}))
-                        CutDonnes(state.form?.donnes,setState)
+                        CutDonnes(state.form?.donnes, setState)
                         setState(f => ({...f, submittedData: true}))
                     }}
                 >
                     <Form.Item
-                        label="Projet"
-                        name="projet"
+                        label="Projet Référence"
+                        name="ref"
                         rules={[{required: true, message: ''}]}
                     >
                         <Select showSearch onChange={(x, e) => {
@@ -110,13 +111,26 @@ const Facture = (props) => {
                                 axios.create().get('/api/factures/ref/' + e.key).then(ft => {
                                     form.setFieldsValue({factureRef: ft.data});
                                 })
-                                form.setFieldsValue({...state.projects.find(f => f.id === parseInt(e.key.toString()))})
+                                const data = state.projects.find(f => f.id === parseInt(e.key.toString()));
+
+                                form.setFieldsValue({
+                                    ...data,
+                                    nemMarche: data.nemMarche || data.ref,
+                                    dateReg: moment()
+                                })
                             }
                         }
                         }>
                             <Option value={null} children={null}/>
-                            {state.projects.map(x => <Option key={x.id} value={x.name}>{x.name}</Option>)}
+                            {state.projects.map(x => <Option key={x.id} value={x.ref}>{x.ref}</Option>)}
                         </Select>
+                    </Form.Item>
+                    <Form.Item
+                        label="project"
+                        name="name"
+                        rules={[{required: true, message: ''}]}
+                    >
+                        <Input disabled/>
                     </Form.Item>
                     <Form.Item
                         label="Marche N°"
@@ -156,86 +170,128 @@ const Facture = (props) => {
                         <Input disabled/>
                     </Form.Item>
 
+                    <Form.Item
+                        label="Etat du règlement"
+                        name="etatReg"
+                    >
+                        <Radio.Group buttonStyle={"solid"}>
+                            <Radio.Button value={"Réglé"} children={"Réglé"}/>
+                            <Radio.Button value={""} children={"N'ai pas Réglé"}/>
+                        </Radio.Group>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Échéance"
+                        name="enhance"
+                    >
+                        <Input/>
+                    </Form.Item>
+                    <Form.Item
+                        label="Date de règlement"
+                        name="dateReg"
+                    >
+                        <DatePicker className={"w-100"} format={"DD/MM/YYYY"}/>
+                    </Form.Item>
+
+
+                    <Form.Item
+                        label="Mode de règlement"
+                        name="modeReg"
+                    >
+                        <Radio.Group buttonStyle={"solid"}>
+                            <Radio.Button value={"Virement"} children={"Virement"}/>
+                            <Radio.Button value={"Chèque"} children={"Chèque"}/>
+                        </Radio.Group>
+                    </Form.Item>
+                    <Form.Item
+                        label="Observation"
+                        name="observation"
+                    >
+                        <Input.TextArea/>
+                    </Form.Item>
+
+
                     <Form.List name={"donnes"}>
                         {(fields, {add, remove}) => (
                             <>
                                 <div className="table-responsive">
-                                <table className="table table-hover table-bordered w-100">
-                                    <thead>
-                                    <tr>
-                                        <th>N°Prix</th>
-                                        <th>Designation des Prestations</th>
-                                        <th>Unite</th>
-                                        <th>Quantité</th>
-                                        <th>Prix Unitaire H.T</th>
-                                        <th>Montant</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {fields.map(({key, name, fieldKey, ...restField}) => (
-                                        <tr key={key}>
-                                            <td className="text-center align-middle">
-                                                {key + 1}
-                                            </td>
-                                            <td className="editFormCol">
-                                                <Form.Item
-                                                    {...restField}
-                                                    name={[name, 'designation']}
-                                                    fieldKey={[fieldKey, 'designation']}
-                                                    rules={[{required: true, message: ""}]}
-                                                >
-                                                    <Input/>
-                                                </Form.Item>
-                                            </td>
-                                            <td className="editFormCol">
-                                                <Form.Item
-                                                    {...restField}
-                                                    name={[name, 'unite']}
-                                                    fieldKey={[fieldKey, 'unite']}
-                                                    rules={[{required: true, message: ""}]}
-                                                >
-                                                    <Select onChange={makeEdition}>
-                                                        <Option value={"%"}>%</Option>
-                                                        <Option value={"U"}>U</Option>
-                                                        <Option value={"F"}>F</Option>
-                                                    </Select>
-                                                </Form.Item>
-                                            </td>
-                                            <td className="editFormCol">
-                                                <Form.Item
-                                                    {...restField}
-                                                    name={[name, 'quality']}
-
-                                                    fieldKey={[fieldKey, 'quality']}
-                                                    rules={[{required: true, message: ""}]}
-                                                >
-                                                    <Input onChange={makeEdition}/>
-                                                </Form.Item>
-                                            </td>
-                                            <td className="editFormCol">
-                                                <Form.Item
-                                                    {...restField}
-                                                    name={[name, 'prix']}
-                                                    fieldKey={[fieldKey, 'prix']}
-                                                    rules={[{required: true, message: ""}]}
-                                                >
-                                                    <Input onChange={makeEdition}/>
-                                                </Form.Item>
-                                            </td>
-                                            <td>
-                                                <Form.Item
-                                                    {...restField}
-                                                    name={[name, 'montant']}
-                                                    fieldKey={[fieldKey, 'montant']}
-                                                    rules={[{required: true, message: ""}]}
-                                                >
-                                                    <InputNumber disabled/>
-                                                </Form.Item>
-                                            </td>
+                                    <table className="table table-hover table-bordered w-100">
+                                        <thead>
+                                        <tr>
+                                            <th>N°Prix</th>
+                                            <th>Designation des Prestations</th>
+                                            <th>Unite</th>
+                                            <th>Quantité</th>
+                                            <th>Prix Unitaire H.T</th>
+                                            <th>Montant</th>
                                         </tr>
-                                    ))}
-                                    </tbody>
-                                </table></div>
+                                        </thead>
+                                        <tbody>
+                                        {fields.map(({key, name, fieldKey, ...restField}) => (
+                                            <tr key={key}>
+                                                <td className="text-center align-middle">
+                                                    {key + 1}
+                                                </td>
+                                                <td className="editFormCol">
+                                                    <Form.Item
+                                                        {...restField}
+                                                        name={[name, 'designation']}
+                                                        fieldKey={[fieldKey, 'designation']}
+                                                        rules={[{required: true, message: ""}]}
+                                                    >
+                                                        <Input/>
+                                                    </Form.Item>
+                                                </td>
+                                                <td className="editFormCol">
+                                                    <Form.Item
+                                                        {...restField}
+                                                        name={[name, 'unite']}
+                                                        fieldKey={[fieldKey, 'unite']}
+                                                        rules={[{required: true, message: ""}]}
+                                                    >
+                                                        <Select onChange={makeEdition}>
+                                                            <Option value={"%"}>%</Option>
+                                                            <Option value={"U"}>U</Option>
+                                                            <Option value={"F"}>F</Option>
+                                                        </Select>
+                                                    </Form.Item>
+                                                </td>
+                                                <td className="editFormCol">
+                                                    <Form.Item
+                                                        {...restField}
+                                                        name={[name, 'quality']}
+
+                                                        fieldKey={[fieldKey, 'quality']}
+                                                        rules={[{required: true, message: ""}]}
+                                                    >
+                                                        <Input onChange={makeEdition}/>
+                                                    </Form.Item>
+                                                </td>
+                                                <td className="editFormCol">
+                                                    <Form.Item
+                                                        {...restField}
+                                                        name={[name, 'prix']}
+                                                        fieldKey={[fieldKey, 'prix']}
+                                                        rules={[{required: true, message: ""}]}
+                                                    >
+                                                        <Input onChange={makeEdition}/>
+                                                    </Form.Item>
+                                                </td>
+                                                <td>
+                                                    <Form.Item
+                                                        {...restField}
+                                                        name={[name, 'montant']}
+                                                        fieldKey={[fieldKey, 'montant']}
+                                                        rules={[{required: true, message: ""}]}
+                                                    >
+                                                        <InputNumber disabled/>
+                                                    </Form.Item>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                                 <div className="row justify-content-center">
                                     <div className="col-xs m-1">
                                         <Button onClick={() => {
@@ -622,10 +678,11 @@ const Facture = (props) => {
 
                         const value = {
                             ...state.form,
-                            project: state.projects.find(t => t.name === state.form.projet),
+                            project: state.projects.find(t => t.name === state.form.name),
                             client: state.form.maitreDouvrage,
                             data: JSON.stringify(state.form.donnes),
-                            totalPrix: state.ttc
+                            totalPrix: state.ttc,
+                            dateReg: moment(state.form.dateReg).toDate(),
                         };
                         delete value.donnes;
 
@@ -641,7 +698,6 @@ const Facture = (props) => {
 
     </>)
 }
-
 
 
 const dtp = (dsp) => ({actions: bindActionCreators(types, dsp)})

@@ -31,7 +31,7 @@ const Header = (props) => {
 
             props.actions.addProject(state);
         });
-    }, [state,props.actions,props.match.params.id])
+    }, [state, props.actions, props.match.params.id])
 
     const modals = () => {
         return <Modal footer={[<Button onClick={() => setProject(false)} key="test">Fermer</Button>]}
@@ -42,7 +42,7 @@ const Header = (props) => {
                 initialValues={{dateDebut: moment(state.dateDebut ? state.dateDebut : moment())}}
                 onFinish={async (data) => {
 
-                    await instance.get('/api/projects/change-date?Pid=' + props.match.params.id + '&date=' + data.dateDebut.format("YYYY-MM-DD")).then(ft => {
+                    await instance.get('/api/projects/set-date?Pid=' + props.match.params.id + '&date=' + data.dateDebut.add(1, 'days').format("YYYY-MM-DD")).then(ft => {
                         setState(f => ({...f, dateDebut: ft.data.dateDebut}))
                         setProject(false);
                         window.location.reload();

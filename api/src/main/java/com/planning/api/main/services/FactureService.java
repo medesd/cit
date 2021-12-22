@@ -108,9 +108,17 @@ public class FactureService {
     }
 
 
-    public List<Map<String,Object>> getAllFactures() {
+    public List<Map<String, Object>> getAllFactures() {
         return mapper.convertListValue(factureRep.findAll());
     }
 
 
+    public List<Map<String, Object>> getFacturesByYear(int year) {
+        return mapper.convertListValue(factureRep.findAll().stream().filter(x -> {
+            x.setData(null);
+            var c = Calendar.getInstance();
+            c.setTime(x.getEntryDate());
+            return c.get(Calendar.YEAR) == year;
+        }).collect(Collectors.toList()));
+    }
 }

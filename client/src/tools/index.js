@@ -14,7 +14,8 @@ import {XmlRowRh07} from "./XmlRowRh07";
 import {Demande, Paragraphe} from "./XmlDataRh08";
 
 export const ConvertDate = (input = moment(), format = "DD/MM/YYYY") => {
-    return input.format(format);
+
+    return moment(input).format(format);
 }
 
 
@@ -382,4 +383,65 @@ export const ExportRH08 = (form, file) => {
 }
 
 
+export const ExportFac02 = (content = {etat: [], rap: []}, preFile, fileName) => {
+
+
+    loadFile(preFile, function (err, data) {
+
+
+        const comD = content.etat.map(x => x.facture.totalPrix).reduce((f, n) => f + n, 0);
+        const comC = content.etat.map(x => x.comCredit).reduce((f, n) => f + n, 0);
+
+
+        const banC = content.etat.map(x => x.banqueCredit).reduce((f, n) => f + n, 0);
+        const banD = content.etat.map(x => x.banqueDebit).reduce((f, n) => f + n, 0);
+
+        // Create a template
+        const template = new XlsxTemplate(data);
+
+        // Replacements take place on first sheet
+
+        // Set up some placeholder values matching the placeholders in the template
+
+        // Perform substitution
+        template.substitute("ETAT SUIVI DES PAIEMENT", {rap: content.rap});
+        template.substitute("RAPPROCH", {banC, banD, comC, comD, etat: content.etat});
+
+        // Get binary data
+        const res = template.generate({type: "blob"});
+        saveAs(res, `${fileName}.xlsx`);
+
+    })
+
+};
+
+
+export const ExportAch04 = (content = {data: [], year: 0}, preFile, fileName) => {
+
+
+    const imageCode = `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAAhCAYAAAB5oeP9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABeSURBVFhH3cgxDQAwDMCw8ifdFYAJZJH8ZK79EGcdZx1nHWcdZx1nHWcdZx1nHWcdZx1nHWcdZx1nHWcdZx1nHWcdZx1nHWcdZx1nHWcdZx1nHWcdZx1nHWcdZ9jsA8CgzoZqCiKiAAAAAElFTkSuQmCC`;
+
+
+    loadFile(preFile, function (err, data) {
+        // Create a template
+        const template = new XlsxTemplate(data);
+
+        // Set up some placeholder values matching the placeholders in the template
+
+        content.data = content.data.map(x => {
+            if (x.classe===null){
+                x.classe = "null"
+            }
+            return x;
+        })
+        // Perform substitution
+        template.substitute("LP", {data: content.data, year: content.year});
+
+        // Get binary data
+        const res = template.generate({type: "blob"});
+        saveAs(res, `${fileName}.xlsx`);
+
+    })
+
+};
 

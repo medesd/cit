@@ -40,6 +40,12 @@ public class FactureCtrl {
         return factureService.getAllFactures();
     }
 
+    @GetMapping(path = "/{year}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Map<String,Object>> getFacturesByYear(@PathVariable("year") int year) {
+        return factureService.getFacturesByYear(year);
+    }
+
 
 
 }

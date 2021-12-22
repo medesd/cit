@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import logo2 from "./logo.jpg";
 import {Menu} from "antd";
 import classes from "./MenuLink.module.css";
@@ -16,7 +16,22 @@ import {useHistory, withRouter} from "react-router";
 
 const {SubMenu} = Menu;
 
+const rootSubmenuKeys = ["sub1", "sub2", "sub3", "sub4", "sub5", "sub6", "sub7", "sub8"]
 const MenuLink = (props) => {
+
+
+    const [openKeys, setOpenKeys] = useState([]);
+
+    const onOpenChange = keys => {
+        const latestOpenKey = keys.find(key => openKeys.indexOf(key) === -1);
+        if (rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
+            setOpenKeys(keys);
+        } else {
+            setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
+        }
+    };
+
+
     const history = useHistory();
     return <>
         <div className={classes.animation}>
@@ -24,14 +39,18 @@ const MenuLink = (props) => {
             <img src={logo2} width={250} className="" height="65" alt=""/>
         </div>
         <Menu
+            openKeys={openKeys}
+            onOpenChange={onOpenChange}
             inlineCollapsed={!props.menu}
             style={{
-                marginTop:65,
+                marginTop: 65,
                 width: props.menu ? 256 : 62,
                 height: "calc(100vh - 65px)",
-                backgroundColor: "rgb(66, 66, 71)"
+                backgroundColor: "rgb(66, 66, 71)",
+                overflow: "hidden"
             }}
             theme={"dark"}
+
             mode={"inline"}
         >
             <SubMenu key="sub1" icon={<BookOutlined/>} title="Etude">
@@ -39,8 +58,12 @@ const MenuLink = (props) => {
                 <Menu.Item onClick={() => history.push("/planning-general")} key="1">Planning général</Menu.Item>
                 <Menu.Item onClick={() => history.push("/new-ordre-service/Etude")} key="2">Ordre service</Menu.Item>
                 <Menu.Item onClick={() => history.push("/etu-04")} key="3">Demande supplémentaire</Menu.Item>
-                <Menu.Item onClick={() => history.push("/fiche-intervention/none")} key="4">Fiche d'intervention</Menu.Item>
+                <Menu.Item onClick={() => history.push("/fiche-intervention/none")} key="4">Fiche
+                    d'intervention</Menu.Item>
                 <Menu.Item key="5">Rapport d'avancement</Menu.Item>
+                <Menu.Item onClick={() => history.push("/taches-details")} key="32">Récapitulatif de la
+                    semaine</Menu.Item>
+                <Menu.Item onClick={() => history.push("/project-res")} key="33">Récapitulatif</Menu.Item>
             </SubMenu>
 
             <SubMenu key="sub2" icon={<BuildOutlined/>} title="Suivi">
@@ -59,7 +82,8 @@ const MenuLink = (props) => {
             </SubMenu>
             <SubMenu key="sub4" icon={<SnippetsOutlined/>} title="Facturation">
                 <Menu.Item onClick={() => history.push("/facture")} key="15">Facture</Menu.Item>
-                <Menu.Item key="16">Etat de suivi des paiements et rapprochement</Menu.Item>
+                <Menu.Item onClick={() => history.push("/fac-02")} key="16">Etat de suivi des paiements et
+                    rapprochement</Menu.Item>
             </SubMenu>
 
             <SubMenu key="sub5" icon={<TeamOutlined/>} title="Ressources Humains">

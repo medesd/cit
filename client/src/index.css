@@ -1,0 +1,32 @@
+.ant-drawer-title {
+
+}
+
+.bg-custom {
+    background-color: #424247;
+    color: #ccc;
+
+}
+
+
+.editFormCol .ant-form-item-control {
+    min-width: 100% !important;
+}
+
+.custom-panel .ant-collapse-header {
+    color: #fff !important;
+    padding: 0 !important;
+}
+
+.custom-collapse .ant-collapse-content {
+    background-color: rgb(66, 66, 71) !important;
+    border: 1px solid #fff;
+}
+
+.table-align-middle td {
+    vertical-align: middle !important;
+}
+
+.table-align-middle th {
+    vertical-align: middle !important;
+}

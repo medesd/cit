@@ -1,0 +1,12 @@
+.animation{
+    background-color: black;
+    position: relative;
+}
+.animation img{
+    position: absolute;
+}
+
+.animation .content{
+    background-color: black;
+    position: absolute;
+}

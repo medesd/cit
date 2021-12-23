@@ -55,6 +55,11 @@ public class Employee {
     @JsonIgnore
     private List<Conge> conges;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
+    @ToString.Exclude
+    @JsonIgnore
+    private List<Sui05> sui05;
+
 
     public Employee() {
     }

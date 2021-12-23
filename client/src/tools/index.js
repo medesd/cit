@@ -487,3 +487,23 @@ export const ExportGmq01 = (form, file) => {
         }
     );
 }
+
+
+export const ExportSui02 = (content = {}, preFile, fileName) => {
+
+
+    loadFile(preFile, function (err, data) {
+        // Create a template
+        const template = new XlsxTemplate(data);
+
+        // Set up some placeholder values matching the placeholders in the template
+        // Perform substitution
+        template.substitute(1, {...content});
+
+        // Get binary data
+        const res = template.generate({type: "blob"});
+        saveAs(res, `${fileName}.xlsx`);
+
+    })
+
+};

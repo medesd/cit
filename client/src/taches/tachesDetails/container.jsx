@@ -120,7 +120,7 @@ const Container = (props) => {
                 setState(f => ({...f, employees: ft.data}))
             })
         }
-        const current = ParseJwt(localStorage.getItem('token'));
+        const current = ParseJwt();
         setState(f => ({...f, currentEmp: current}));
         axios.create().get('/api/employees/elements/' + current.id).then(ft => {
             setState(f => ({...f, elements: ft.data}));

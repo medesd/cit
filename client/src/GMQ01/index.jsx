@@ -3,7 +3,7 @@ import {bindActionCreators} from "redux";
 import * as types from "../redux/actions/actions";
 import {connect} from "react-redux";
 import {DatePicker, Form, Input, Radio} from "antd";
-import {ConvertDate, ExportGmq01, GenerateDocument} from "../tools";
+import {ConvertDate, ExportGmq01} from "../tools";
 import gmq01 from "../assets/GMQ01.docx";
 import axios from "axios";
 import Button from "antd-button-color";

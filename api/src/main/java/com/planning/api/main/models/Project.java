@@ -52,12 +52,23 @@ public class Project {
 
     @JsonIgnore
     @ToString.Exclude
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "project")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
     private List<Facture> factures;
 
 
     @JsonIgnore
     @ToString.Exclude
-    @OneToOne(cascade = CascadeType.ALL,mappedBy = "project")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "project")
     private Intervention intervention;
+
+
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "project")
+    private Sui02 sui02;
+
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "project")
+    private Sui05 sui05;
 }

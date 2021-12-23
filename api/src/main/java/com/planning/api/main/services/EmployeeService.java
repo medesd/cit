@@ -1,9 +1,5 @@
 package com.planning.api.main.services;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.planning.api.main.classes.ElementDTO;
-import com.planning.api.main.classes.EmployeeDTO;
-import com.planning.api.main.classes.TacheDTO;
 import com.planning.api.main.models.Employee;
 import com.planning.api.main.reps.EmployeeRep;
 import com.planning.api.security.dao.RoleRepo;
@@ -16,7 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -46,6 +46,8 @@ import FAC02 from "./FAC02";
 import ACH04 from "./ACH04";
 import ACH03 from "./ACH03";
 import ACH05 from "./ACH05";
+import SUI02 from "./SUI02";
+import SUI05 from "./SUI05";
 
 
 function App(props) {
@@ -75,9 +77,7 @@ function App(props) {
             })
         }
         localStorage.setItem("notif", "1");
-    }, [props.actions,user])
-
-
+    }, [props.actions, user])
 
 
     const action = type => store.dispatch({type})
@@ -179,6 +179,12 @@ function App(props) {
                             </Route>
                             <Route path="/new-ordre-service/:type">
                                 <NewOrdreService/>
+                            </Route>
+                            <Route path="/sui-02">
+                                <SUI02/>
+                            </Route>
+                            <Route path="/sui-05">
+                                <SUI05/>
                             </Route>
 
                             {/*TODO:ACH*/}

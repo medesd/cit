@@ -12,12 +12,13 @@ import java.util.Date;
 @Setter
 @Getter
 @ToString
-public class Rh06 {
+public class Ach05 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private Date entryDate;
+    private String ref;
     @Column(columnDefinition = "json")
     @JsonRawValue
     private String data;
+    private Date entryDate;
 }

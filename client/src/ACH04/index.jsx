@@ -5,6 +5,7 @@ import axios from "axios";
 import moment from "moment";
 import ach04 from '../assets/ACH04.xlsx'
 import {ExportAch04} from "../tools";
+import {DeleteOutlined, EditOutlined} from "@ant-design/icons";
 
 const ACH04 = () => {
     const [state, setState] = useState({year: moment().year(), data: [], modalAdd: false});
@@ -16,10 +17,11 @@ const ACH04 = () => {
     }, [state.year]);
 
 
-    const modalAdd = <Modal footer={[]} title={"Ajouter"} onCancel={() => setState(f => ({...f, modalAdd: true}))}
-                            onOk={() => setState(f => ({...f, modalAdd: true}))} visible={state.modalAdd}>
+    const modalAdd = <Modal footer={[]} title={"Ajouter"} onCancel={() => setState(f => ({...f, modalAdd: false}))}
+                            onOk={() => setState(f => ({...f, modalAdd: false}))} visible={state.modalAdd}>
         <Form onFinish={val => {
             axios.create().post('/api/ach04', val).then(ft => {
+                setState(f => ({...f, modalAdd: false}));
                 console.log(ft);
             })
         }} labelAlign={"left"} labelCol={{span: 7}}>
@@ -89,6 +91,7 @@ const ACH04 = () => {
                             <th>N°COMPTE</th>
                             <th>CLASSE</th>
                             <th>JUSTIFICATION</th>
+                            <th>ACTION</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -110,6 +113,14 @@ const ACH04 = () => {
                                     }
 
                                     <td>{x.just}</td>
+                                    <td><Button type={"primary"} className={"mr-1"} shape={"circle"}
+                                                icon={<EditOutlined/>}/>
+                                        <Button type={"danger"} onClick={() => {
+                                            axios.create().delete("/api/ach04/" + x.id).then(() => {
+                                                const data = state.data.filter(f => f.id !== x.id);
+                                                setState(f => ({...f, data}));
+                                            })
+                                        }} className={"ml-1"} shape={"circle"} icon={<DeleteOutlined/>}/></td>
                                 </tr>
                             })
                         }
@@ -122,7 +133,7 @@ const ACH04 = () => {
             <div className="row">
                 <div className="col text-center">
                     <Button type={"success"} onClick={() => {
-                        ExportAch04({data: state.data, year: state.year}, ach04, "text")
+                        ExportAch04({data: state.data, year: state.year}, ach04, "ACH04_" + state.year)
                     }} children={"Export as Xlsx"}/>
                 </div>
             </div>

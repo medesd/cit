@@ -1,5 +1,6 @@
 package com.planning.api.main.models;
 
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,6 +16,7 @@ public class Com02 {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String projectRef;
-    @Column(columnDefinition = "Text")
+    @Column(columnDefinition = "json")
+    @JsonRawValue
     private String data;
 }

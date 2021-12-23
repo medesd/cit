@@ -1,6 +1,6 @@
 package com.planning.api.main.models;
 
-import com.fasterxml.jackson.annotation.JsonRawValue;
+import jdk.jfr.Enabled;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,12 +12,18 @@ import java.util.Date;
 @Setter
 @Getter
 @ToString
-public class Rh06 {
+public class Ach03 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    private String ref;
+    private Date dateFac;
+    private String name;
+    @Column(columnDefinition = "Text")
+    private String details;
+    private float ttc;
+    private Date enhance;
+    private Date dateReg;
+    private String modeReg;
     private Date entryDate;
-    @Column(columnDefinition = "json")
-    @JsonRawValue
-    private String data;
 }

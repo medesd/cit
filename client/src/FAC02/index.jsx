@@ -275,7 +275,7 @@ const FAC02 = () => {
                         <Button type={"success"} onClick={() => {
                             const o = {etat: state.data, rap: state.facturesByYear};
                             console.log(o);
-                            ExportFac02(o, fac02, 'test')
+                            ExportFac02(o, fac02, 'FAC02_' + state.year)
                         }} children={"Export as Xslx"}/>
                     </div>
                 </div>

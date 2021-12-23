@@ -1,6 +1,7 @@
 package com.planning.api.main.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,7 +22,8 @@ public class Facture {
     private String ice;
     private String factureRef;
     private Date entryDate;
-    @Column(columnDefinition = "Text")
+    @Column(columnDefinition = "json")
+    @JsonRawValue
     private String data;
     private float totalPrix;
     private String etatReg;

@@ -48,9 +48,6 @@ const GMQ02 = (props) => {
                     <Form.Item>
                         <Button htmlType={"submit"} type={"success"} children={"Generate"}/>
                     </Form.Item>
-                    <Button onClick={() => {
-                        ExportTest()
-                    }} children={"click"}/>
                 </Form>
             </div>
         </div>

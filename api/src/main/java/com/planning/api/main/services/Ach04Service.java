@@ -30,4 +30,8 @@ public class Ach04Service {
         ach04.setEntryDate(new Date());
         ach04Rep.save(ach04);
     }
+
+    public void delete(long id) {
+        ach04Rep.deleteById(id);
+    }
 }

@@ -12,6 +12,7 @@ import {XmlTableRh03} from "./XmlTableRh03";
 import {XmlTableRh06} from "./XmlTableRh06";
 import {XmlRowRh07} from "./XmlRowRh07";
 import {Demande, Paragraphe} from "./XmlDataRh08";
+import {XmlRowGmq01} from "./XmlRowGmq01";
 
 export const ConvertDate = (input = moment(), format = "DD/MM/YYYY") => {
 
@@ -419,9 +420,6 @@ export const ExportFac02 = (content = {etat: [], rap: []}, preFile, fileName) =>
 export const ExportAch04 = (content = {data: [], year: 0}, preFile, fileName) => {
 
 
-    const imageCode = `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAAhCAYAAAB5oeP9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABeSURBVFhH3cgxDQAwDMCw8ifdFYAJZJH8ZK79EGcdZx1nHWcdZx1nHWcdZx1nHWcdZx1nHWcdZx1nHWcdZx1nHWcdZx1nHWcdZx1nHWcdZx1nHWcdZx1nHWcdZ9jsA8CgzoZqCiKiAAAAAElFTkSuQmCC`;
-
-
     loadFile(preFile, function (err, data) {
         // Create a template
         const template = new XlsxTemplate(data);
@@ -429,7 +427,7 @@ export const ExportAch04 = (content = {data: [], year: 0}, preFile, fileName) =>
         // Set up some placeholder values matching the placeholders in the template
 
         content.data = content.data.map(x => {
-            if (x.classe===null){
+            if (x.classe === null) {
                 x.classe = "null"
             }
             return x;
@@ -445,3 +443,47 @@ export const ExportAch04 = (content = {data: [], year: 0}, preFile, fileName) =>
 
 };
 
+
+export const ExportAch03 = (content = {data: []}, preFile, fileName) => {
+
+
+    loadFile(preFile, function (err, data) {
+        // Create a template
+        const template = new XlsxTemplate(data);
+
+        // Set up some placeholder values matching the placeholders in the template
+        // Perform substitution
+        template.substitute("ETAT SUIVI", {data: content.data});
+
+        // Get binary data
+        const res = template.generate({type: "blob"});
+        saveAs(res, `${fileName}.xlsx`);
+
+    })
+
+};
+
+
+export const ExportGmq01 = (form, file) => {
+    loadFile(
+        file,
+        function (error, content) {
+            if (error) {
+                throw error;
+            }
+            const zip = new PizZip(content);
+            const doc = new DocxTemplate(zip);
+
+            doc.render({
+                ...form,
+                row: XmlRowGmq01(form.type)
+            });
+            const out = doc.getZip().generate({
+                type: "blob",
+                mimeType:
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            });
+            saveAs(out, `planning_des_formations_${new Date().getFullYear()}_.docx`);
+        }
+    );
+}

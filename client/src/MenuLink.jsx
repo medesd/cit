@@ -76,9 +76,9 @@ const MenuLink = (props) => {
             <SubMenu key="sub3" icon={<ShopOutlined/>} title="Achat">
                 <Menu.Item onClick={() => history.push("/ach-01")} key="10">Demande d'achat</Menu.Item>
                 <Menu.Item onClick={() => history.push("/ach-02")} key="11">Bon de commande</Menu.Item>
-                <Menu.Item key="12">Etat de suivi des prestataires</Menu.Item>
-                <Menu.Item key="13">Liste des prestataires & prestataires évolues</Menu.Item>
-                <Menu.Item key="14">Tableau comparatif des prestataires</Menu.Item>
+                <Menu.Item onClick={() => history.push("/ach-03")} key="12">Etat de suivi des prestataires</Menu.Item>
+                <Menu.Item onClick={() => history.push("/ach-04")} key="13">Liste des prestataires & prestataires évolues</Menu.Item>
+                <Menu.Item onClick={() => history.push("/ach-05")} key="14">Tableau comparatif des prestataires</Menu.Item>
             </SubMenu>
             <SubMenu key="sub4" icon={<SnippetsOutlined/>} title="Facturation">
                 <Menu.Item onClick={() => history.push("/facture")} key="15">Facture</Menu.Item>

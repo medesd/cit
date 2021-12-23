@@ -44,6 +44,8 @@ import RH07 from "./RH07";
 import RH08 from "./RH08";
 import FAC02 from "./FAC02";
 import ACH04 from "./ACH04";
+import ACH03 from "./ACH03";
+import ACH05 from "./ACH05";
 
 
 function App(props) {
@@ -185,6 +187,12 @@ function App(props) {
                             </Route>
                             <Route path="/ach-02">
                                 <ACH02/>
+                            </Route>
+                            <Route path="/ach-03">
+                                <ACH03/>
+                            </Route>
+                            <Route path="/ach-05">
+                                <ACH05/>
                             </Route>
 
                             <Route path="/ach-04">

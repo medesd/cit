@@ -25,4 +25,9 @@ public class Ach04Ctrl {
     public List<Ach04> findByYear(@PathVariable("year") int year) {
         return ach04Service.findByYear(year);
     }
+
+    @DeleteMapping(path = "/{id}")
+    public void delete(@PathVariable("id") long id){
+        ach04Service.delete(id);
+    }
 }

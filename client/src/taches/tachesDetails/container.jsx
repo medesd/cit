@@ -147,7 +147,10 @@ const Container = (props) => {
                     const fs = state.elements.find(d => d.identifier === f);
                     document.getElementById(f).style.backgroundColor = fs.bgcolor;
                     document.getElementById(f).style.color = fs.color;
-                    document.getElementById(f).innerHTML = fs.value;
+                    if (!fs.tache.project?.maitreDouvrage)
+                        document.getElementById(f).innerHTML = fs.value;
+                    else
+                        document.getElementById(f).innerHTML = fs.tache.project?.maitreDouvrage;
                 } else {
                     document.getElementById(f).style.backgroundColor = '#fff';
                     document.getElementById(f).innerHTML = '';
@@ -418,6 +421,17 @@ const Container = (props) => {
                                         </div>
                                     case '#28a745':
                                         return <div>
+
+                                            <div className="row mx-2 my-1 border-bottom pb-1 flex-column text-center">
+                                                <div className="col w-100">
+                                                    Référence:
+                                                </div>
+                                                <div className="col border">
+                                                    {findIdentifier.tache.project.ref}
+                                                </div>
+                                            </div>
+
+
                                             <div className="row mx-2 my-1 border-bottom pb-1 flex-column text-center">
                                                 <div className="col w-100">
                                                     Projet:
@@ -510,6 +524,7 @@ const Container = (props) => {
                     onMouseLeave={event => {
                         event.target.style.border = "1px solid #dee2e6";
                     }}>
+                    {findIdentifier?.tache.project?.maitreDouvrage}
                 </td>
             </Popover>
         }

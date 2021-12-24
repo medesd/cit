@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class Sui02Service {
@@ -26,7 +27,7 @@ public class Sui02Service {
         sui02Rep.save(sui02);
     }
 
-    public List<Sui02> findAll() {
-        return sui02Rep.findAll();
+    public List<Sui02> findAll(String filter) {
+        return sui02Rep.findAll().stream().filter(x -> x.toString().toLowerCase().contains(filter.toLowerCase())).collect(Collectors.toList());
     }
 }

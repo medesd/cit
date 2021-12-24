@@ -5,6 +5,8 @@ import com.planning.api.main.services.Etu04Service;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/api/etu04")
 @CrossOrigin("*")
@@ -20,10 +22,18 @@ public class Etu04Ctrl {
     public String generateRef() {
         return etu04Service.generateRef();
     }
+
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public void saveEtu04(@RequestBody Etu04 etu04){
+    public void saveEtu04(@RequestBody Etu04 etu04) {
         etu04Service.saveEtu04(etu04);
+    }
+
+
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Etu04> findAll() {
+        return etu04Service.findAll();
     }
 
 }

@@ -57,7 +57,7 @@ public class TacheService {
         if (!ts.getInex().equalsIgnoreCase("Externe")) {
             tache.setRealJreel(ts.getRealJreel());
             tache.setJreel(ts.getJreel());
-            tache.setComplete(ts.getComplete());
+            /*tache.setComplete(ts.getComplete());*/
         }
         tache.setProject(ts.getProject());
         tache.setElements(ts.getElements());

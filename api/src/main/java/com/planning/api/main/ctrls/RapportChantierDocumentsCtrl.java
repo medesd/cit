@@ -4,6 +4,8 @@ import com.planning.api.main.models.RapportChantierDocuments;
 import com.planning.api.main.services.RapportChantierDocumentsService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/api/rap-chantier-documents")
 @CrossOrigin("*")
@@ -22,5 +24,10 @@ public class RapportChantierDocumentsCtrl {
     @GetMapping("/generate")
     public String generateRef() {
         return rapportChantierDocumentsService.generateRef();
+    }
+
+    @GetMapping
+    public List<RapportChantierDocuments> findAll(){
+        return rapportChantierDocumentsService.findAll();
     }
 }

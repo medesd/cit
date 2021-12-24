@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class Etu04Service {
@@ -48,5 +49,9 @@ public class Etu04Service {
     public void saveEtu04(Etu04 etu04) {
         etu04.setEntryDate(new Date());
         etu04Rep.save(etu04);
+    }
+
+    public List<Etu04> findAll() {
+        return etu04Rep.findAll();
     }
 }

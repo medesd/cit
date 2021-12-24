@@ -206,9 +206,9 @@ const PlanningGeneral = (props) => {
     }
 
 
-    return <div className="container-fluid px-5">
+    return <div className="container">
 
-        <div className="row border my-3 flex-nowrap justify-content-between">
+        <div className="row border mb-3 flex-nowrap justify-content-between">
             <div className="col-xs"><img className="border h-100" width={100} src={image} alt=""/></div>
             <div className="col-xs d-flex justify-content-center align-items-center"><h3
                 className="text-center m-0">PLANNING GENERAL DES
@@ -267,7 +267,7 @@ const PlanningGeneral = (props) => {
                 </div>
             </div>
         </div>
-        <div className="row my-3 flex-column align-items-center">
+        <div className="row py-3 m-0 flex-column align-items-center">
             <div className="col-xs border">
                 <Button type="link" icon={<PlaySquareFilled
                     style={{fontSize: "20px", color: "rgb(0,103,0)", backgroundColor: "rgb(0,103,0)"}}/>}
@@ -372,7 +372,7 @@ const PlanningGeneral = (props) => {
                 <div className="row m-0">
                     <div className="gantt"/>
                 </div>
-                <div className="row justify-content-center">
+                <div className="row m-0 justify-content-center">
                     <div className="col-xs"><Button id="btn" type="primary" onClick={() => {
                         document.getElementById('navbar').classList.remove("d-flex");
                         document.getElementById('btn').style.display = "none";

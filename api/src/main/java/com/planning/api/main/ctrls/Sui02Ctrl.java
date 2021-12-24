@@ -22,7 +22,8 @@ public class Sui02Ctrl {
     }
 
     @GetMapping
-    public List<Sui02> findAll() {
-        return sui02Service.findAll();
+    public List<Sui02> findAll(@RequestParam(value = "filter", required = false) String filter) {
+        if (filter == null) filter = "";
+        return sui02Service.findAll(filter);
     }
 }

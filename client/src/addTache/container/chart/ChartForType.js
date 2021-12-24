@@ -26,11 +26,17 @@ export const leftPanel = (element) => {
         '<span>' +
         'Phase' +
         '</span>' +
-        '</div>', '<div id="rowheader" style="' + styleWidthCol + ';width: calc(100% - 40px)" class="row d-flex justify-content-center name row" id="RowdId_">' +
+        '</div>', '<div id="rowheader" style="' + styleWidthCol + ';width: calc(100% - 170px)" class="row d-flex justify-content-center name row" id="RowdId_">' +
         '<span>' +
         tc +
         '</span>' +
-        '</div>'];
+        '</div>',
+            '<div id="rowheader" style="' + styleWidthCol + ';width: 60px" class="row d-flex justify-content-center name row" id="RowdId_">' +
+            '<span>Heurs Réel</span>' +
+            '</div>',
+            '<div id="rowheader" style="' + styleWidthCol + ';width: 70px" class="row d-flex justify-content-center name row" id="RowdId_">' +
+            '<span>Heurs Estimé</span>' +
+            '</div>'];
 
 
     }
@@ -101,12 +107,26 @@ export const leftPanel = (element) => {
         }
 
         if (element.typeFor === "details") {
+
+            if (entry.inex === "Externe") {
+                entry.hoursReel = "-"
+                entry.percent = "-"
+            }
+
             entries.push('<div id="rowheader' + i + '" style="' + styleWidth + '; width: 40px" class="row d-flex justify-content-center align-content-center desc row" id="RowdId_">' +
                 '<span>' + entry.phase + '</span>' +
                 '</div>');
 
-            entries.push('<div id="rowheader' + i + '" style="' + styleWidth + ';width: calc(100% - 40px)" class="row d-flex justify-content-center align-content-center desc row" id="RowdId_">' +
+            entries.push('<div id="rowheader' + i + '" style="' + styleWidth + ';width: calc(100% - 170px)" class="row d-flex justify-content-center align-content-center desc row" id="RowdId_">' +
                 '<span>' + entry.tache + '</span>' +
+                '</div>');
+
+            entries.push('<div id="rowheader' + i + '" style="' + styleWidth + ';width: 60px" class="row d-flex justify-content-center align-content-center desc row" id="RowdId_">' +
+                '<span>' + entry.hoursReel + '</span>' +
+                '</div>');
+
+            entries.push('<div id="rowheader' + i + '" style="' + styleWidth + ';width: 70px" class="row d-flex justify-content-center align-content-center desc row" id="RowdId_">' +
+                '<span>' + entry.percent + '</span>' +
                 '</div>');
         }
         if (element.typeFor === "general") {

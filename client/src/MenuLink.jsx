@@ -68,9 +68,9 @@ const MenuLink = (props) => {
 
             <SubMenu key="sub2" icon={<BuildOutlined/>} title="Suivi">
                 <Menu.Item onClick={() => history.push("/rap-chantier-documents")} key="6">Rapport</Menu.Item>
-                <Menu.Item key="7">Rapport d'avancement</Menu.Item>
+                <Menu.Item onClick={() => history.push("/sui-02")} key="7">Rapport d'avancement</Menu.Item>
                 <Menu.Item onClick={() => history.push("/new-ordre-service/Suivi")} key="8">Ordre service</Menu.Item>
-                <Menu.Item key="9">Planning général</Menu.Item>
+                <Menu.Item onClick={() => history.push("/sui-05")} key="9">Planning général</Menu.Item>
             </SubMenu>
 
             <SubMenu key="sub3" icon={<ShopOutlined/>} title="Achat">
@@ -108,7 +108,7 @@ const MenuLink = (props) => {
                 <Menu.Item onClick={() => history.push("/gmq-01")} key="26">Fiche de non-conformité</Menu.Item>
                 <Menu.Item onClick={() => history.push("/gmq-02")} key="27">Bordereau de diffusion</Menu.Item>
                 <Menu.Item key="28">Fiche indicateur</Menu.Item>
-                <Menu.Item key="29">Etat des actions d'amélioration</Menu.Item>
+                <Menu.Item onClick={() => history.push("/gmq-07")} key="29">Etat des actions d'amélioration</Menu.Item>
                 <Menu.Item onClick={() => history.push("/gmq-09")} key="30">PV</Menu.Item>
             </SubMenu>
         </Menu>

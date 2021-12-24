@@ -1,6 +1,7 @@
 package com.planning.api.main.ctrls;
 
 import com.planning.api.main.models.Sui05;
+import com.planning.api.main.models.Sui05Element;
 import com.planning.api.main.services.Sui05Service;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,5 +26,15 @@ public class Sui05Ctrl {
     @GetMapping
     public List<Map<String, Object>> findAll() {
         return sui05Service.findAll();
+    }
+
+    @PostMapping("/add")
+    public void addElements(@RequestBody List<Sui05Element> sui05Elements) {
+        sui05Service.addElements(sui05Elements);
+    }
+
+    @PostMapping("/delete")
+    public void deleteElements(@RequestBody List<String> sui05Elements) {
+        sui05Service.deleteElements(sui05Elements);
     }
 }

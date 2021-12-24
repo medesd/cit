@@ -1,12 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {DatePicker, Form, Input, Modal, Select} from "antd";
+import React, {useEffect, useRef, useState} from 'react';
+import {Collapse, DatePicker, Form, Input, Modal, Select} from "antd";
 import moment from "moment";
 import Button from "antd-button-color";
 import {ParseJwt} from "../tools";
 import axios from "axios";
-import $ from "jquery";
+import {bindActionCreators} from "redux";
+import * as AcTypes from "../redux/actions/actions";
+import {connect} from "react-redux";
 
-const SUI05 = () => {
+const SUI05 = (props) => {
     const [form] = Form.useForm();
 
     const [state, setState] = useState({
@@ -17,62 +19,24 @@ const SUI05 = () => {
         projectsNames: [],
         employee: null,
         modalAdd: false,
-        element: [],
         elements: [],
-        choisModal: false
+        choisModal: false,
+        projectId: null
     });
 
+    const mouseRef = useRef(false);
 
     useEffect(() => {
-        $(function () {
-            let list = [];
-            let isMouseDown = false;
-            $("#suivi_table td")
-                .mousedown(function (evt) {
-                    isMouseDown = true;
-                    if (parseInt($(this).attr('data-select'))) {
-                        $(this).attr('data-select', 0)
-                        evt.target.style.border = "1px solid #dee2e6"
-                        list = list.filter(x => x !== evt.target.id)
-                    } else if (!$(this).hasClass('disabled-cells')) {
-                        $(this).attr('data-select', 1)
-                        evt.target.style.border = "1px solid black"
-                        evt.target.style.borderLeft = "2px solid black"
-                        evt.target.style.borderTop = "2px solid black"
-                        list.push(evt.target.id);
-                    }
-                    return false;
-                })
-                .mouseenter(function (evt) {
-                    if (isMouseDown) {
-                        if (parseInt($(this).attr('data-select'))) {
-                            $(this).attr('data-select', 0)
-                            evt.target.style.border = "1px solid #dee2e6"
-                            list = list.filter(x => x !== evt.target.id)
-                        } else if (!$(this).hasClass('disabled-cells')) {
-                            $(this).attr('data-select', 1)
-                            evt.target.style.border = "1px solid black"
-                            evt.target.style.borderLeft = "2px solid black"
-                            evt.target.style.borderTop = "2px solid black"
-                            list.push(evt.target.id);
-                        }
-                    }
-                })
-
-            $("#suivi_table td")
-                .mouseup(function () {
-                    setState(f => ({...f, elements: list}));
-                    list = [];
-                    if (parseInt($(this).attr('data-select'))) {
-
-                        setState(f => ({...f, choisModal: true}));
-                    }
-                    $('#suivi_table td').attr('data-select', 0);
-                    $('#suivi_table td').css({border: "1px solid #dee2e6"})
-                    isMouseDown = false;
-                });
-        });
-    }, [state.element])
+        const map = state.projects?.map(x => {
+            console.log(x);
+            return x.sui05Elements
+        }).flat()
+        map.forEach(x => {
+            if (!document.getElementById(x.identifier)) return;
+            const e = document.getElementById(x.identifier);
+            e.style.backgroundColor = "#0fb400";
+        })
+    }, [state.projects,state.elements])
 
 
     useEffect(() => {
@@ -90,8 +54,8 @@ const SUI05 = () => {
         axios.create().get('/api/sui05').then(ft => {
             setState(f => ({...f, projects: ft.data}));
         })
-        const dateStart = state.startDate;
-        const dateEnd = state.endDate;
+        const dateStart = state.startDate.clone();
+        const dateEnd = state.endDate.clone();
         const range = [];
 
         while (dateStart.format('MM-YYYY') !== dateEnd.format('MM-YYYY')) {
@@ -102,7 +66,12 @@ const SUI05 = () => {
 
         setState(f => ({...f, range}))
 
-    }, [state.startDate, state.endDate]);
+        props.actions.setHeaderTitle("Planning general des projets de suivi");
+        return () => {
+            props.actions.setHeaderTitle("");
+        }
+
+    }, [props.actions,state.startDate, state.endDate]);
 
 
     const modalAdd = <Modal okButtonProps={{color: "#ddd"}} okText={"Enregistrer"} title={"Ajouter"}
@@ -145,14 +114,99 @@ const SUI05 = () => {
     </Modal>
 
 
-    const modalChois = <Modal onOk={() => setState(f => ({...f, choisModal: false}))} onCancel={() => setState(f => ({...f, choisModal: false}))} visible={state.choisModal} footer={null}>
-        <div className="row flex-column">
-            <div className="col">
-                <Button children={"Supprimer"}/>
-                <Button children={"ajouter"}/>
-            </div>
+    const modalChois = <Modal onOk={() => setState(f => ({...f, choisModal: false}))}
+                              onCancel={() => setState(f => ({...f, choisModal: false}))} visible={state.choisModal}
+                              footer={null}>
+        <div className="row mt-5 flex-column">
+            <Collapse defaultActiveKey={1}>
+                <Collapse.Panel key={1} header={"Ajouter"}>
+                    <Form onFinish={val => {
+                        const data = state.elements.map(x => ({
+                            identifier: x,
+                            data: JSON.stringify(val),
+                            sui05: {id: parseInt(state.projectId)}
+                        }))
+                        axios.create().post('/api/sui05/add', data).then(x => {
+                            const p = state.projects.find(f => f.id === parseInt(state.projectId));
+                            p.sui05Elements = [...p.sui05Elements, ...data];
+                            setState(f => ({...f, projects: [...f.projects.filter(r => r.id !== p.id), p]}))
+                        })
+                    }}>
+                        <Form.Item label={"Commentaire"} name={"comment"}>
+                            <Input.TextArea/>
+                        </Form.Item>
+                        <Form.Item className={"text-center"}>
+                            <Button htmlType={"submit"} type={"success"} children={"Enregistrer"}/>
+                        </Form.Item>
+                    </Form>
+                </Collapse.Panel>
+                <Collapse.Panel className={"text-center"} key={2} header={"Supprimer"}>
+                    <Button type={"danger"} onClick={() => {
+                        axios.create().post('/api/sui05/delete', state.elements).then(() => {
+
+                            state.elements.forEach(x => {
+                                document.getElementById(x).style.backgroundColor = "#fff"
+                            })
+
+                            const p = state.projects.find(f => f.id === parseInt(state.projectId));
+                            p.sui05Elements = p.sui05Elements.filter(d => !state.elements.includes(d.identifier));
+                            setState(f => ({...f, projects: [...f.projects.filter(r => r.id !== p.id), p]}))
+                        });
+                    }} className={"mr-1"} children={"Oui"}/>
+                    <Button type={"primary"} onClick={() => setState(f => ({...f, choisModal: false}))}
+                            className={"ml-1"} children={"Non"}/>
+                </Collapse.Panel>
+            </Collapse>
         </div>
     </Modal>
+
+
+    const tdMouseDown = (val) => {
+        mouseRef.current = true;
+        if (parseInt(val.currentTarget.dataset["select"])) {
+            val.currentTarget.style.border = "1px solid #dee2e6";
+        } else {
+            val.currentTarget.dataset["select"] = "1";
+            val.currentTarget.style.border = "1px solid black"
+            val.currentTarget.style.borderLeft = "2px solid black"
+            val.currentTarget.style.borderTop = "2px solid black"
+        }
+    };
+
+
+    const tdMouseEnter = val => {
+        if (!mouseRef.current) return;
+
+        if (parseInt(val.currentTarget.dataset["select"])) {
+            val.currentTarget.dataset["select"] = "0";
+            val.currentTarget.style.border = "1px solid #dee2e6"
+        } else {
+            val.currentTarget.dataset["select"] = "1";
+            val.currentTarget.style.border = "1px solid black"
+            val.currentTarget.style.borderLeft = "2px solid black"
+            val.currentTarget.style.borderTop = "2px solid black"
+        }
+    };
+
+
+    window.onmouseup = () => {
+        const t = Array.from(document.querySelectorAll("#suivi_table td")).filter(f => !f.classList.contains("disabled-cells") && f.dataset["select"] === "1");
+
+        if (t.length < 1) return;
+        setState(f => ({
+            ...f,
+            elements: Array.from(t).filter(f => f.dataset["select"] === "1").map(f => f.id),
+            choisModal: true,
+            projectId: Array.from(t).filter(f => f.dataset["select"] === "1")[0].dataset["project"]
+        }))
+
+        t.map(f => f.id).forEach(f => {
+            const element = document.getElementById(f);
+            element.dataset["select"] = "0";
+            element.style.border = "1px solid #dee2e6";
+        })
+        mouseRef.current = false;
+    }
 
 
     return (
@@ -198,9 +252,11 @@ const SUI05 = () => {
                             state.projects?.map(x => <tr key={x.id}>
                                 <td className="disabled-cells">{x.project.name}</td>
                                 <td className="disabled-cells">{x.employee.firstName[0] + "." + x.employee.lastName}</td>
-                                {state.range?.map(s => <td onMouseLeave={() => {
-                                    setState(f => ({...f, element: [s + "." + x.id]}))
-                                }} id={s + "." + x.id} key={s}/>)}
+                                {state.range?.map(s => <td
+                                    onMouseDown={tdMouseDown}
+
+                                    onMouseEnter={tdMouseEnter}
+                                    id={s + "." + x.id} key={s} data-project={x.id} data-select={"0"}/>)}
                             </tr>)
                         }
                         </tbody>
@@ -211,4 +267,7 @@ const SUI05 = () => {
     );
 };
 
-export default SUI05;
+const dtp = (dsp) => ({actions: bindActionCreators(AcTypes, dsp)})
+
+export default connect(null, dtp)(SUI05);
+

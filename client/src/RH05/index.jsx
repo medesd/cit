@@ -4,10 +4,13 @@ import moment from "moment";
 import Button from "antd-button-color";
 import {ArrowLeftOutlined, ArrowRightOutlined} from "@ant-design/icons";
 import {DatePicker, Form, Input, Modal, Popover, Select} from "antd";
+import {bindActionCreators} from "redux";
+import * as types from "../redux/actions/actions";
+import {connect} from "react-redux";
 
 const {RangePicker} = DatePicker;
 
-const RH05 = () => {
+const RH05 = (props) => {
     const [form] = Form.useForm();
 
     const [state, setState] = useState({congesModal: false, year: 2021, months: [], employees: []});
@@ -22,7 +25,11 @@ const RH05 = () => {
             setState(f => ({...f, months, employees: ft.data}));
 
         });
-    }, [state.year]);
+        props.actions.setHeaderTitle("Planning des conges");
+        return () => {
+            props.actions.setHeaderTitle("");
+        }
+    }, [props.actions,state.year]);
 
 
     const CongesModal = <Modal title={"Ajouter des congés"} footer={[]}
@@ -174,4 +181,8 @@ const RH05 = () => {
     );
 };
 
-export default RH05;
+const dtp = (dsp) => ({actions: bindActionCreators(types, dsp)})
+
+
+export default connect(null, dtp)(RH05);
+

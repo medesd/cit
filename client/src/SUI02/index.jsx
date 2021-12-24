@@ -6,8 +6,11 @@ import {ConvertDate, ExportSui02} from "../tools";
 import sui02 from '../assets/SUI02.xlsx';
 import axios from "axios";
 import moment from "moment";
+import {bindActionCreators} from "redux";
+import * as types from "../redux/actions/actions";
+import {connect} from "react-redux";
 
-const SUI02 = () => {
+const SUI02 = (props) => {
     const [state, setState] = useState({projectNames: [], lastValue: 0});
     const [form] = Form.useForm();
 
@@ -16,7 +19,11 @@ const SUI02 = () => {
         axios.create().get('/api/projects/names').then(ft => {
             setState(f => ({...f, projectNames: ft.data}))
         })
-    }, [form]);
+        props.actions.setHeaderTitle("Rapport d'avencemnt de suivi");
+        return () => {
+            props.actions.setHeaderTitle("");
+        }
+    }, [props.actions,form]);
 
 
     return (
@@ -185,4 +192,8 @@ const SUI02 = () => {
     );
 };
 
-export default SUI02;
+const dtp = (dsp) => ({actions: bindActionCreators(types, dsp)})
+
+
+export default connect(null, dtp)(SUI02);
+

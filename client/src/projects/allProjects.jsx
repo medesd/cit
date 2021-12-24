@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import moment from "moment";
 import Button from "antd-button-color";
-import {ArrowRightOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
+import {ArrowRightOutlined, DeleteOutlined, EditOutlined, SaveOutlined} from "@ant-design/icons";
 import {withRouter} from "react-router";
 import {DatePicker, InputNumber, message, notification, Popconfirm, Select} from "antd";
 import Modal from "antd/es/modal";
@@ -848,12 +848,12 @@ const AllProjects = (props) => {
                                         {ParseJwt(localStorage.getItem('token')).roles.map(f => f.authority).includes("ROLE_ADMIN") ?
 
                                             <Popconfirm
-                                                title="Êtes-vous sûr de supprimer ce projet?"
+                                                title="Êtes-vous sûr de archiver ce projet?"
                                                 onConfirm={e => confirm(e, f.id)}
                                                 okText="Oui"
                                                 cancelText="Non"
                                             >
-                                                <Button shape="circle" icon={<DeleteOutlined/>} type="danger"/>
+                                                <Button shape="circle" icon={<SaveOutlined/>} type="info"/>
                                             </Popconfirm> : null
                                         }
 

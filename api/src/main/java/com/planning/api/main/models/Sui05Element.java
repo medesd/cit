@@ -16,8 +16,6 @@ public class Sui05Element {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private Date startDate;
-    private Date endDate;
     private String identifier;
     @JsonRawValue
     @Column(columnDefinition = "json")

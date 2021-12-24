@@ -6,15 +6,23 @@ import {ConvertDate, ExportRH03, ReplaceWithEmpty} from "../tools";
 import rh03 from "../assets/RH03.docx";
 import axios from "axios";
 import moment from "moment";
+import {bindActionCreators} from "redux";
+import * as types from "../redux/actions/actions";
+import {connect} from "react-redux";
 
-const RH03 = () => {
+const RH03 = (props) => {
     const [form] = Form.useForm();
 
     useEffect(() => {
         axios.create().get("/api/rh03/generate").then(ft => {
             form.setFieldsValue({date: moment(), ref: ft.data, donnes: [{}]})
         })
-    }, [form])
+
+        props.actions.setHeaderTitle("Feuille de presence");
+        return () => {
+            props.actions.setHeaderTitle("");
+        }
+    }, [props.actions,form])
 
 
     return (
@@ -105,4 +113,7 @@ const RH03 = () => {
     );
 };
 
-export default RH03;
+const dtp = (dsp) => ({actions: bindActionCreators(types, dsp)})
+
+
+export default connect(null, dtp)(RH03);

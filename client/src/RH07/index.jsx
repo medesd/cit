@@ -5,8 +5,11 @@ import {ConvertDate, ExportRH07} from "../tools";
 import rh07 from '../assets/RH07.docx';
 import axios from "axios";
 import moment from "moment";
+import {bindActionCreators} from "redux";
+import * as types from "../redux/actions/actions";
+import {connect} from "react-redux";
 
-const RH07 = () => {
+const RH07 = (props) => {
     const [form] = Form.useForm();
 
 
@@ -14,7 +17,12 @@ const RH07 = () => {
         axios.create().get("/api/rh07/generate").then(ft => {
             form.setFieldsValue({ref: ft.data, date: moment(), datePre: moment(), decision: true});
         })
-    }, [form]);
+
+        props.actions.setHeaderTitle("Demande de formation");
+        return () => {
+            props.actions.setHeaderTitle("");
+        }
+    }, [props.actions,form]);
 
 
     return (
@@ -97,4 +105,8 @@ const RH07 = () => {
     );
 };
 
-export default RH07;
+const dtp = (dsp) => ({actions: bindActionCreators(types, dsp)})
+
+
+export default connect(null, dtp)(RH07);
+

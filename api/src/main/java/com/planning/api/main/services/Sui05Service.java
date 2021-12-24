@@ -56,15 +56,15 @@ public class Sui05Service {
 
 
     public void addElements(List<Sui05Element> element) {
+
         var s = sui05Rep.getById(element.get(0).getSui05().getId());
         sui05ElementRep.saveAll(element.stream().peek(x -> {
-            x.setEndDate(new Date());
+            x.setEntryDate(new Date());
             x.setSui05(s);
         }).collect(Collectors.toList()));
     }
 
-    public void deleteElements(List<Sui05Element> element) {
-        var list = sui05ElementRep.findAll().stream().filter(x -> element.stream().map(Sui05Element::getIdentifier).collect(Collectors.toList()).contains(x.getIdentifier())).collect(Collectors.toList());
-        sui05ElementRep.deleteAll(list);
+    public void deleteElements(List<String> element) {
+        sui05ElementRep.findAllByIdentifier(element);
     }
 }

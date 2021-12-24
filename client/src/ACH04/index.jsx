@@ -6,15 +6,23 @@ import moment from "moment";
 import ach04 from '../assets/ACH04.xlsx'
 import {ExportAch04} from "../tools";
 import {DeleteOutlined, EditOutlined} from "@ant-design/icons";
+import {bindActionCreators} from "redux";
+import * as types from "../redux/actions/actions";
+import {connect} from "react-redux";
 
-const ACH04 = () => {
+const ACH04 = (props) => {
     const [state, setState] = useState({year: moment().year(), data: [], modalAdd: false});
 
     useEffect(() => {
         axios.create().get('/api/ach04/' + state.year).then(ft => {
             setState(f => ({...f, data: ft.data}))
         })
-    }, [state.year]);
+
+        props.actions.setHeaderTitle("Liste des prestataires et des prestataires evalues");
+        return () => {
+            props.actions.setHeaderTitle("");
+        }
+    }, [props.actions,state.year]);
 
 
     const modalAdd = <Modal footer={[]} title={"Ajouter"} onCancel={() => setState(f => ({...f, modalAdd: false}))}
@@ -141,4 +149,7 @@ const ACH04 = () => {
     );
 };
 
-export default ACH04;
+const dtp = (dsp) => ({actions: bindActionCreators(types, dsp)})
+
+
+export default connect(null, dtp)(ACH04);

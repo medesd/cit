@@ -48,6 +48,7 @@ import ACH03 from "./ACH03";
 import ACH05 from "./ACH05";
 import SUI02 from "./SUI02";
 import SUI05 from "./SUI05";
+import GMQ07 from "./GMQ07";
 
 
 function App(props) {
@@ -238,6 +239,10 @@ function App(props) {
                             </Route>
                             <Route path="/gmq-09">
                                 <GMQ09/>
+                            </Route>
+
+                            <Route path="/gmq-07">
+                                <GMQ07/>
                             </Route>
 
                             {/*TODO:RH*/}

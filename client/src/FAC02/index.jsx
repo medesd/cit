@@ -5,8 +5,11 @@ import axios from "axios";
 import moment from "moment";
 import fac02 from '../assets/FAC02.xlsx';
 import {ConvertDate, ExportFac02} from "../tools";
+import {bindActionCreators} from "redux";
+import * as types from "../redux/actions/actions";
+import {connect} from "react-redux";
 
-const FAC02 = () => {
+const FAC02 = (props) => {
     const [form] = Form.useForm();
     const [state, setState] = useState({
         modalAdd: false,
@@ -48,7 +51,13 @@ const FAC02 = () => {
                 setState(f => ({...f, data: ft2.data}))
             });
         });
-    }, [state.year]);
+
+
+        props.actions.setHeaderTitle("Etat de suivi des paiements et rapprochement");
+        return () => {
+            props.actions.setHeaderTitle("");
+        }
+    }, [props.actions,state.year]);
 
 
     const modalAdd = <Modal forceRender={true} title={"Ajouter"} visible={state.modalAdd} footer={[]}
@@ -284,4 +293,7 @@ const FAC02 = () => {
     );
 };
 
-export default FAC02;
+const dtp = (dsp) => ({actions: bindActionCreators(types, dsp)})
+
+
+export default connect(null, dtp)(FAC02);

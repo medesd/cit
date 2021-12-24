@@ -5,8 +5,11 @@ import axios from "axios";
 import {ConvertDate, ExportAch03} from "../tools";
 import ach03 from '../assets/ACH03.xlsx';
 import {DeleteOutlined, EditOutlined} from "@ant-design/icons";
+import {bindActionCreators} from "redux";
+import * as types from "../redux/actions/actions";
+import {connect} from "react-redux";
 
-const ACH03 = () => {
+const ACH03 = (props) => {
     const [state, setState] = useState({data: [], modalAdd: false})
 
     useEffect(() => {
@@ -19,7 +22,11 @@ const ACH03 = () => {
             })
             setState(f => ({...f, data: ft.data}))
         })
-    }, [])
+        props.actions.setHeaderTitle("Etat de suivi des prestataires");
+        return () => {
+            props.actions.setHeaderTitle("");
+        }
+    }, [props.actions])
 
 
     const modalAdd = <Modal title={"Ajouter"} footer={[]} visible={state.modalAdd}
@@ -132,4 +139,7 @@ const ACH03 = () => {
     );
 };
 
-export default ACH03;
+const dtp = (dsp) => ({actions: bindActionCreators(types, dsp)})
+
+
+export default connect(null, dtp)(ACH03);

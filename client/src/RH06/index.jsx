@@ -6,10 +6,13 @@ import rh06 from '../assets/RH06.docx';
 import {ExportRH06} from "../tools";
 import axios from "axios";
 import moment from "moment";
+import {bindActionCreators} from "redux";
+import * as types from "../redux/actions/actions";
+import {connect} from "react-redux";
 
 const {RangePicker} = DatePicker;
 
-const RH06 = () => {
+const RH06 = (props) => {
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -35,7 +38,12 @@ const RH06 = () => {
                 }
             ]
         })
-    }, [form])
+
+        props.actions.setHeaderTitle("Planning et suivi des formations");
+        return () => {
+            props.actions.setHeaderTitle("");
+        }
+    }, [props.actions,form])
 
     return (
         <div className={"container-fluid"}>
@@ -279,4 +287,9 @@ const RH06 = () => {
     );
 };
 
-export default RH06;
+const dtp = (dsp) => ({actions: bindActionCreators(types, dsp)})
+
+
+export default connect(null, dtp)(RH06);
+
+

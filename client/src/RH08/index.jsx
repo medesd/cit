@@ -6,8 +6,11 @@ import {ConvertDate, ExportRH08} from "../tools";
 import rh08 from '../assets/RH08.docx';
 import axios from "axios";
 import moment from "moment";
+import {bindActionCreators} from "redux";
+import * as types from "../redux/actions/actions";
+import {connect} from "react-redux";
 
-const RH08 = () => {
+const RH08 = (props) => {
     const [form] = Form.useForm();
 
 
@@ -15,7 +18,12 @@ const RH08 = () => {
         axios.create().get("/api/rh08/generate").then(ft => {
             form.setFieldsValue({ref: ft.data, date: moment(),motivation:[""],taches:[""], demande: true, date2: moment(), postType: "stage"});
         })
-    }, [form]);
+
+        props.actions.setHeaderTitle("Demande de recrutement");
+        return () => {
+            props.actions.setHeaderTitle("");
+        }
+    }, [props.actions,form]);
 
 
     return (
@@ -126,4 +134,7 @@ const RH08 = () => {
     );
 };
 
-export default RH08;
+const dtp = (dsp) => ({actions: bindActionCreators(types, dsp)})
+
+
+export default connect(null, dtp)(RH08);

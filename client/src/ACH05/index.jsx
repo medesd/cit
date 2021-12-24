@@ -3,8 +3,11 @@ import {Form, Input, Modal} from "antd";
 import {MinusOutlined, PlusOutlined} from "@ant-design/icons";
 import Button from "antd-button-color";
 import axios from "axios";
+import {bindActionCreators} from "redux";
+import * as types from "../redux/actions/actions";
+import {connect} from "react-redux";
 
-const ACH05 = () => {
+const ACH05 = (props) => {
     const [state, setState] = useState({modalAdd: false, data: []})
 
 
@@ -12,7 +15,11 @@ const ACH05 = () => {
         axios.create().get("/api/ach05").then(ft => {
             setState(f => ({...f, data: ft.data}))
         })
-    }, [])
+        props.actions.setHeaderTitle("Tableau comparatif des prestataires");
+        return () => {
+            props.actions.setHeaderTitle("");
+        }
+    }, [props.actions])
 
 
     const modalAdd = <Modal footer={[]} style={{minWidth: 800}} title={"Ajouter"}
@@ -168,4 +175,7 @@ const ACH05 = () => {
     );
 };
 
-export default ACH05;
+const dtp = (dsp) => ({actions: bindActionCreators(types, dsp)})
+
+
+export default connect(null, dtp)(ACH05);

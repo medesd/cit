@@ -23,6 +23,10 @@ const {Option} = Select;
 const Container = (props) => {
     const [form] = Form.useForm();
 
+
+    const cell = useRef(false);
+    const list = useRef([]);
+
     const roles = useRef(ParseJwt(localStorage.getItem('token')).roles.map(f => f.authority));
     const instance = axios.create();
 
@@ -71,9 +75,24 @@ const Container = (props) => {
             $(function () {
                 let list = [];
                 let isMouseDown = false;
-                $("#our_table td")
-                    .mousedown(function (evt) {
-                        isMouseDown = true;
+
+                const elements = $("#our_table td")
+                elements.on("mousedown", function (evt) {
+                    isMouseDown = true;
+                    if (parseInt($(this).attr('data-select'))) {
+                        $(this).attr('data-select', 0)
+                        evt.target.style.border = "1px solid #dee2e6"
+                        list = list.filter(x => x !== evt.target.id)
+                    } else if (!$(this).hasClass('disabled-cells')) {
+                        $(this).attr('data-select', 1)
+                        evt.target.style.border = "1px solid black"
+                        evt.target.style.borderLeft = "2px solid black"
+                        evt.target.style.borderTop = "2px solid black"
+                        list.push(evt.target.id);
+                    }
+                    return false;
+                }).on("mouseenter", function (evt) {
+                    if (isMouseDown) {
                         if (parseInt($(this).attr('data-select'))) {
                             $(this).attr('data-select', 0)
                             evt.target.style.border = "1px solid #dee2e6"
@@ -85,35 +104,17 @@ const Container = (props) => {
                             evt.target.style.borderTop = "2px solid black"
                             list.push(evt.target.id);
                         }
-                        return false;
-                    })
-                    .mouseenter(function (evt) {
-                        if (isMouseDown) {
-                            if (parseInt($(this).attr('data-select'))) {
-                                $(this).attr('data-select', 0)
-                                evt.target.style.border = "1px solid #dee2e6"
-                                list = list.filter(x => x !== evt.target.id)
-                            } else if (!$(this).hasClass('disabled-cells')) {
-                                $(this).attr('data-select', 1)
-                                evt.target.style.border = "1px solid black"
-                                evt.target.style.borderLeft = "2px solid black"
-                                evt.target.style.borderTop = "2px solid black"
-                                list.push(evt.target.id);
-                            }
-                        }
-                    })
-
-                $("#our_table td")
-                    .mouseup(function () {
-                        setState(f => ({...f, elementsUp: list}));
-                        list = [];
-                        if (parseInt($(this).attr('data-select'))) {
-                            setState(f => ({...f, choisModal: true}));
-                        }
-                        $('#our_table td').attr('data-select', 0);
-                        $('#our_table td').css({border: "1px solid #dee2e6"})
-                        isMouseDown = false;
-                    });
+                    }
+                }).on("mouseup", function () {
+                    setState(f => ({...f, elementsUp: list}));
+                    list = [];
+                    if (parseInt($(this).attr('data-select'))) {
+                        setState(f => ({...f, choisModal: true}));
+                    }
+                    elements.attr('data-select', 0);
+                    elements.css({border: "1px solid #dee2e6"})
+                    isMouseDown = false;
+                })
             });
         } else {
             axios.create().get('/api/employees/names').then(ft => {

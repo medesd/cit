@@ -21,6 +21,7 @@ const FAC02 = (props) => {
 
     useEffect(() => {
         axios.create().get("/api/factures/" + state.year).then(ft => {
+            console.log(ft.data);
             setState(f => ({
                 ...f, facturesByYear: ft.data.map(x => {
                     x.entryDate = ConvertDate(x.entryDate);
@@ -57,7 +58,7 @@ const FAC02 = (props) => {
         return () => {
             props.actions.setHeaderTitle("");
         }
-    }, [props.actions,state.year]);
+    }, [props.actions, state.year]);
 
 
     const modalAdd = <Modal forceRender={true} title={"Ajouter"} visible={state.modalAdd} footer={[]}

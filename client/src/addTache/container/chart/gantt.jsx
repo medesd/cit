@@ -134,7 +134,7 @@ class Gantt extends Component {
                                     <td>{f.tache}</td>
                                     <td>{f.inex}</td>
                                     <td>{f.commentaires}</td>
-                                    <td className="action">{ParseJwt(localStorage.getItem('token')).roles.map(f => f.authority).includes("ROLE_USER") ?
+                                    <td className="action">{ParseJwt().roles.map(f => f.authority).includes("ROLE_USER") ?
 
                                         <Popconfirm
                                             title="Êtes-vous sûr de supprimer cette tâche?"

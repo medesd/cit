@@ -22,7 +22,7 @@ const ACH04 = (props) => {
         return () => {
             props.actions.setHeaderTitle("");
         }
-    }, [props.actions,state.year]);
+    }, [props.actions, state.year]);
 
 
     const modalAdd = <Modal footer={[]} title={"Ajouter"} onCancel={() => setState(f => ({...f, modalAdd: false}))}
@@ -78,10 +78,13 @@ const ACH04 = (props) => {
     return (
         <div className={"container-fluid"}>
             {modalAdd}
-            <div className="row mt-4">
+            <div className="row justify-content-around mt-4">
                 <div className="col-xs">
                     <Button type={"success"} onClick={() => setState(f => ({...f, modalAdd: true}))}
                             children={"Ajouter"}/>
+                </div>
+                <div className="col-xs">
+                    <Input.Search/>
                 </div>
             </div>
             <div className="row mt-3">

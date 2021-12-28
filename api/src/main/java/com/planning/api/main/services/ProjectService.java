@@ -183,14 +183,20 @@ public class ProjectService {
     }
 
     @SneakyThrows
-    public Map<String, Object> setDateDebut(String date, Long Pid) {
+    public Map<String, Object> setDateDebut(Date date, Long Pid) {
         var p = projectRep.getById(Pid);
-        var ini = p.getDateDebut();
-        var now = new SimpleDateFormat("yyyy-MM-dd").parse(date);
-        if (ini == null) ini = now;
+        var now = Calendar.getInstance();
+        now.setTime(date);
+        var ini = Calendar.getInstance();
+        ini.setTime(p.getDateDebut());
+
+        //var now = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+        if (p.getDateDebut() == null) ini = now;
 
 
-        long diffInMillis = now.getTime() - ini.getTime();
+
+
+        long diffInMillis = now.getTimeInMillis() - ini.getTimeInMillis();
         long diff = TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
         var taches = p.getTaches().stream().peek(x -> {
             Calendar c1 = Calendar.getInstance();
@@ -206,7 +212,7 @@ public class ProjectService {
             x.setJreelStart(c2.getTimeInMillis());
 
         }).collect(Collectors.toList());
-        p.setDateDebut(now);
+        p.setDateDebut(now.getTime());
         p.setTaches(taches);
 
 

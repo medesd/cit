@@ -924,7 +924,7 @@ export const fillData = (element, datapanel) => {
             joursReel = moment(day.dayRE).diff(day.dayRS, 'days') + 1;
         } else if (element.typeFor === "details" || element.typeFor === "general") {
             joursEstime = day.realJest;
-            joursReel = day.realJreel + 1;
+            joursReel = day.realJreel;
         } else {
             joursEstime = 0;
             joursReel = 0;

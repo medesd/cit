@@ -30,6 +30,7 @@ const AddTache = (props) => {
 
     const onFinish = (values) => {
 
+
         if (values.nb === undefined) values.nb = [];
         values = RemoveEmpty(values);
         const jours = GetLastTacheAdd(state, values)
@@ -68,6 +69,7 @@ const AddTache = (props) => {
             phase: values.phase,
             inex: values.inex
         }
+
 
         instance.post('/api/taches', value).then(() => window.location.reload());
     };

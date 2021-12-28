@@ -6,10 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.Instant;
+import java.util.*;
 
 @RequestMapping("/api/projects")
 @RestController
@@ -33,7 +31,7 @@ public class ProjectCtrl {
     @PreAuthorize("hasRole('USER')")
     public List<Map<String, Object>> getAllProjects(@RequestParam(name = "filter", required = false) String filter, @RequestParam(name = "main", required = false) boolean main) {
         if (filter == null) filter = "";
-        return projectService.getAllProjects(filter,main);
+        return projectService.getAllProjects(filter, main);
     }
 
     @GetMapping(path = "/{id}")
@@ -63,10 +61,11 @@ public class ProjectCtrl {
     }
 
 
-    @GetMapping("/set-date")
+    @PostMapping("/set-date")
     @PreAuthorize("hasRole('USER')")
-    public Map<String, Object> setDateDebut(@RequestParam("Pid") Long Pid, @RequestParam("date") String date) {
-        return projectService.setDateDebut(date, Pid);
+    public Map<String, Object> setDateDebut(@RequestBody Map<String, Object> data) {
+        Instant date = Instant.parse((String) data.get("date"));
+        return projectService.setDateDebut(Date.from(date), Long.valueOf(data.get("pid").toString()));
     }
 
 

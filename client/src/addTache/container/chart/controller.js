@@ -123,7 +123,7 @@ export const render = (element) => {
     content.append(core.navigation(element));
 
     let $dataPanel = $rightPanel.find(".dataPanel");
-    console.log($dataPanel)
+
 
     element.gantt = $('<div class="fn-gantt" />').append(content);
 

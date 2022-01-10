@@ -28,7 +28,7 @@ const SUI05 = (props) => {
 
     useEffect(() => {
         const map = state.projects?.map(x => {
-            console.log(x);
+
             return x.sui05Elements
         }).flat()
         map.forEach(x => {
@@ -86,10 +86,10 @@ const SUI05 = (props) => {
                 employee: {id: ParseJwt().id},
                 project: {id: state.projectsNames.find(x => x.ref === val.ref).id}
             }).then(() => {
-                console.log("...")
+
             })
 
-            console.log()
+
 
         }} labelCol={{span: 5}} labelAlign={"left"}
               initialValues={{agent: state.employee ? state.employee?.firstName[0] + "." + state.employee?.lastName : ""}}>

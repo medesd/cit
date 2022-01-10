@@ -35,7 +35,7 @@ const ACH03 = (props) => {
 
         <Form onFinish={val => {
             axios.create().post('/api/ach03', val).then(ft => {
-                console.log(ft);
+
             })
         }} labelAlign={"left"} labelCol={{span: 7}}>
             <Form.Item name={"ref"} label={"Facture N°"}>

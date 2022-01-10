@@ -16,7 +16,7 @@ const ACH01 = (props) => {
 
 
     useEffect(() => {
-        console.log();
+
         axios.create().get("/api/employees/names").then(x => {
             if (x.data === '') return;
             const user = x.data.find(d => d.id === ParseJwt().id);

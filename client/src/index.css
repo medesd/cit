@@ -30,3 +30,6 @@
 .table-align-middle th {
     vertical-align: middle !important;
 }
+.ant-picker-calendar-mode-switch{
+    display: none;
+}

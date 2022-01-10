@@ -39,7 +39,7 @@ const RH03 = (props) => {
                                 form.setFieldsValue({date: moment(), ref: ft2.data, donnes: [{}]})
                             })
                         })
-                        console.log(val)
+
                     }} labelAlign={"left"} labelCol={{span: 4}}>
                         <Form.Item name={"ref"} label={"N°"}>
                             <Input/>

@@ -27,7 +27,7 @@ const ACH05 = (props) => {
                             onOk={() => setState(f => ({...f, modalAdd: false}))} visible={state.modalAdd}>
         <Form onFinish={val => {
             axios.create().post("/api/ach05", {ref: val.ref, data: JSON.stringify(val.donnes)}).then(ft => {
-                console.log(ft);
+
             })
         }
         } labelAlign={"left"} labelCol={{span: 4}}>

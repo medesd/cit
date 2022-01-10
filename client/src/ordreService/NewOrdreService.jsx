@@ -83,7 +83,7 @@ const NewOrdreService = (props) => {
         const plt = [];
 
         const x = state.names;
-        console.log(x);
+
         data.forEach(s => {
             if (!projet[s]) return;
             const items = x.find(f => f.name === projet[s]);

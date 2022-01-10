@@ -22,7 +22,7 @@ const rootSubmenuKeys = ["sub1", "sub2", "sub3", "sub4", "sub5", "sub6", "sub7",
 const MenuLink = (props) => {
 
     const roles = ParseJwt().roles.map(x=>x.authority);
-    console.log(roles)
+
 
 
     const [openKeys, setOpenKeys] = useState([]);

@@ -21,7 +21,7 @@ const FAC02 = (props) => {
 
     useEffect(() => {
         axios.create().get("/api/factures/" + state.year).then(ft => {
-            console.log(ft.data);
+
             setState(f => ({
                 ...f, facturesByYear: ft.data.map(x => {
                     x.entryDate = ConvertDate(x.entryDate);
@@ -76,9 +76,9 @@ const FAC02 = (props) => {
             }
 
             axios.create().post('/api/fac02', fac02).then(ft => {
-                console.log(ft);
+
             })
-            console.log(fac02);
+
         }} form={form} labelAlign={"left"} labelCol={{span: 6}}>
             <div className="col">
                 <h5 className={"text-center"}>Chez la comptabilité</h5>
@@ -92,7 +92,7 @@ const FAC02 = (props) => {
 
                     const facture = state.factures?.find(x => x.id.toString() === e.key);
                     facture.entryDate = moment(facture.entryDate);
-                    console.log(facture);
+
                     const tv = facture.totalPrix * 0.2;
 
                     facture.ttc = tv + facture.totalPrix;
@@ -284,7 +284,7 @@ const FAC02 = (props) => {
                     <div className="col text-center">
                         <Button type={"success"} onClick={() => {
                             const o = {etat: state.data, rap: state.facturesByYear};
-                            console.log(o);
+
                             ExportFac02(o, fac02, 'FAC02_' + state.year)
                         }} children={"Export as Xslx"}/>
                     </div>

@@ -126,7 +126,7 @@ const Header = (props) => {
                             <td className="text-center">{state.ref}</td>
                         </tr>
                         <tr onClick={() => {
-                            console.log(state.dateDebut)
+
                             setProject(true);
                         }}>
 

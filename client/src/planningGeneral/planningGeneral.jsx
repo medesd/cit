@@ -206,7 +206,7 @@ const PlanningGeneral = (props) => {
     }
 
 
-    return <div className="container">
+    return <div style={{width:"90vw"}} className="mx-auto">
 
         <div className="row border mb-3 flex-nowrap justify-content-between">
             <div className="col-xs"><img className="border h-100" width={100} src={image} alt=""/></div>

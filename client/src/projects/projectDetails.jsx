@@ -20,7 +20,7 @@ const ProjectDetails = () => {
     useEffect(() => {
 
         axios.create().get('/api/projects/ref/' + id).then(ft => {
-            console.log(ft.data);
+
             setState(ft.data);
             form.setFieldsValue({
                 ...ft.data,

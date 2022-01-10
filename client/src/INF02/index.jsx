@@ -83,7 +83,6 @@ const INF02 = (props) => {
 
             <Form.Item name={"affectation"} label={"Affectation"}>
                 <AutoComplete
-                    onChange={c => console.log(state)}
                     options={state.employees?.map(x => ({value: x.firstName[0] + "." + x.lastName}))}/>
             </Form.Item>
 

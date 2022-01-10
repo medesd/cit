@@ -60,7 +60,7 @@ const AjouteEmployee = (props) => {
 
     useEffect(() => {
         axios.create().get('/api/employees?filter=').then(ft => {
-            console.log(ft)
+
             setState(f => ({...f, employees: ft.data.map(x => ({...x, dateN: moment(x.dateNaissance,"DD/MM/YYYY")}))}));
         })
         props.actions.setHeaderTitle("Personnel")

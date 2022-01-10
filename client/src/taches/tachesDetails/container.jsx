@@ -13,7 +13,7 @@ import * as types from "../../redux/actions/actions";
 import {connect} from "react-redux";
 import axios from "axios";
 import image from "../../addTache/header/image002.png";
-import {Checkbox} from "antd";
+import {Calendar, Checkbox} from "antd";
 import $ from 'jquery';
 import {ParseJwt} from "../../tools";
 
@@ -22,10 +22,6 @@ const {Option} = Select;
 
 const Container = (props) => {
     const [form] = Form.useForm();
-
-
-    const cell = useRef(false);
-    const list = useRef([]);
 
     const roles = useRef(ParseJwt(localStorage.getItem('token')).roles.map(f => f.authority));
     const instance = axios.create();
@@ -47,6 +43,8 @@ const Container = (props) => {
         date: moment().format("DD/MM/YYYY"),
         days: [],
         tacheSelected: false,
+        elementsV2: [],
+        setDate: false,
     })
 
     //TODO: Http Requests
@@ -65,6 +63,18 @@ const Container = (props) => {
     const deleteElement = async () => {
         return await instance.patch('/api/elements', state.elementsUp);
     }
+
+
+    const setDate = <Modal forceRender={true} footer={null} visible={state.setDate}
+                           onCancel={() => setState(f => ({...f, setDate: false}))}
+                           onOk={() => setState(f => ({...f, setDate: false}))}>
+        <Calendar value={moment(state.date, "DD/MM/YYYY")} fullscreen={false} onSelect={(val) => {
+            const date = val.format('DD/MM/YYYY');
+            setState(f => ({...f, date}));
+            makeDays(date);
+        }
+        } mode={"month"}/>
+    </Modal>
 
 
     //TODO: Effects
@@ -224,7 +234,7 @@ const Container = (props) => {
     //TODO: Forms Functions
     const onSelectProject = (_, evt) => {
         setState(f => ({...f, currentProjectId: evt.key}))
-        console.log();
+
         form.setFieldsValue({tacheName: [], project: props.state.projects.find(x => x.id === parseInt(evt.key)).name});
         tachesGet(evt.key).then(ft => {
             setState(f => ({...f, taches: ft.data}));
@@ -762,6 +772,7 @@ const Container = (props) => {
 
     return (
         <div className="container mt-4">
+            {setDate}
             <div className="row justify-content-between">
                 <div className="border col-xs">
                     <img height={80} src={image} alt=""/>
@@ -797,7 +808,8 @@ const Container = (props) => {
                         </div>
 
 
-                        <div className="col m-1">{state.date}</div>
+                        <div onClick={() => setState(f => ({...f, setDate: true}))}
+                             className="col btn">{state.date}</div>
 
 
                         <div className="col"><Button onClick={() => editDate(true)} type="primary"
@@ -837,6 +849,54 @@ const Container = (props) => {
                     </div>
                 </div>) : null
             }
+
+            <div className="row mt-3 justify-content-center">
+                <div className="col-xs"><h3 className="text-center">Full Recap</h3></div>
+            </div>
+
+
+            <div className="row justify-content-center mt-4">
+                <div className="col-xs">
+                    <Input.Search placeholder={"Recherche"} onInput={(val) => {
+                        if (val.target.value.trim() === '') {
+                            setState(f => ({...f, elementsV2: []}));
+                            return;
+                        }
+
+                        setState(f => ({
+                            ...f,
+                            elementsV2: state.elements.map(x => JSON.stringify(x)).filter(x => x.toLowerCase().includes(val.target.value.toLowerCase())).map(x => JSON.parse(x))
+                        }))
+                    }}/>
+                </div>
+            </div>
+            {
+                state.elementsV2.length !== 0 ? <div className="row mt-4">
+                    <div className="col">
+                        <table className="table table-align-middle text-center table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>element</th>
+                                <th>Projet</th>
+                                <th>Commentaire</th>
+                                <th>Date</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {!roles.current.includes('ROLE_ADMIN') ? state.elementsV2?.map(x => {
+                                return <tr key={x.id}>
+                                    <td>{x.value}</td>
+                                    <td>{x?.tache.project?.name}</td>
+                                    <td>{x.comment}</td>
+                                    <td>{x.identifier.split("-")[0]}</td>
+                                </tr>
+                            }) : null}
+                            </tbody>
+                        </table>
+                    </div>
+                </div> : null
+            }
+
         </div>
     );
 

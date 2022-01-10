@@ -125,8 +125,8 @@ public class ElementService {
 
 
             if (collect.isPresent()) {
-                int days = Tools.getDifferenceDays(new Date(x.getJestStart()), collect.get());
-                x.setJest(String.valueOf(days));
+                int days = Tools.getDifferenceDays(new Date(x.getJreelStart()), collect.get());
+                x.setJreel(String.valueOf(days));
 
                 Date date1 = new Date(x.getJreelStart());
                 Calendar cal1 = Calendar.getInstance();

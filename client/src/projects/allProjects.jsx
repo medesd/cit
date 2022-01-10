@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import moment from "moment";
 import Button from "antd-button-color";
-import {ArrowRightOutlined, DeleteOutlined, EditOutlined, SaveOutlined} from "@ant-design/icons";
+import {ArrowRightOutlined, EditOutlined, SaveOutlined} from "@ant-design/icons";
 import {withRouter} from "react-router";
 import {DatePicker, InputNumber, message, notification, Popconfirm, Select} from "antd";
 import Modal from "antd/es/modal";
@@ -79,7 +79,7 @@ const AllProjects = (props) => {
             r.data === '' || setState(f => ({...f, employees: r.data}))
         )
         axios.create().get('/api/projects?main=true&filter=').then(r => {
-            console.log(r);
+
             if (r.data !== "")
                 setState(f => ({...f, projects: r.data}))
         });
@@ -399,7 +399,7 @@ const AllProjects = (props) => {
         );
     }
     const onSearch = (e) => {
-        projectGet(e).then(r => {
+        projectGet(e.target.value.trim()).then(r => {
             setState(f => ({...f, projects: r.data}))
         });
     }
@@ -775,7 +775,7 @@ const AllProjects = (props) => {
                 </div>
 
                 <div className="col-xs">
-                    <Search enterButton placeholder="Rechercher" allowClear onSearch={onSearch} style={{width: 200}}/>
+                    <Search placeholder="Rechercher" onInput={onSearch} style={{width: 200}}/>
                 </div>
             </div>
             <div className="row justify-content-center">

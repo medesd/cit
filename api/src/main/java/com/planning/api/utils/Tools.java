@@ -61,7 +61,7 @@ public class Tools {
 
 
                 tacheRep.save(x);
-                makeSomeLogic(x, edit, tacheRep);
+                makeSomeLogic(x, true, tacheRep);
             }
         } else {
             for (var x : allByRecentIn) {
@@ -78,7 +78,7 @@ public class Tools {
 
 
                 tacheRep.save(x);
-                makeSomeLogic(x, edit, tacheRep);
+                makeSomeLogic(x, false, tacheRep);
             }
         }
 

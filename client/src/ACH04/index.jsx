@@ -30,7 +30,7 @@ const ACH04 = (props) => {
         <Form onFinish={val => {
             axios.create().post('/api/ach04', val).then(ft => {
                 setState(f => ({...f, modalAdd: false}));
-                console.log(ft);
+
             })
         }} labelAlign={"left"} labelCol={{span: 7}}>
             <Form.Item name={"entreprise"} label={"Nom ou siege social"}>

@@ -8,7 +8,7 @@ import {connect} from "react-redux";
 import {ConvertDate, FindAllPilotes, GenerateDocument} from "../tools";
 import Button from "antd-button-color";
 import etu04 from '../assets/ETU04.docx';
-import {DeleteOutlined, DownloadOutlined, EyeOutlined} from "@ant-design/icons";
+import {DeleteOutlined, DownloadOutlined} from "@ant-design/icons";
 
 
 const ETU04 = (props) => {

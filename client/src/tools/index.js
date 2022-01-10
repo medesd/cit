@@ -198,7 +198,7 @@ export const GenerateDocument = (data, preFile, fileName) => {
                     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             });
 
-            console.log(out);
+
             saveAs(out, `${fileName}.docx`);
         }
     );
@@ -251,7 +251,7 @@ export const ExportTest = (form) => {
                     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             });
 
-            console.log(out);
+
             saveAs(out, `file.docx`);
         }
     );

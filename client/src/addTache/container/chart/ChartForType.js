@@ -660,6 +660,7 @@ export const fillData = (element, datapanel) => {
         }
     };
     element.data.forEach((day, j) => {
+
         let _bar;
         let from, to, cFrom, cTo, dFrom, dTo, dl, dp;
         let topEl, top;

@@ -167,7 +167,7 @@ const RH06 = (props) => {
 
                                                                             {fields1.map(personnes => {
 
-                                                                                console.log(personnes)
+
 
 
                                                                                 return <div key={personnes.key}

@@ -32,6 +32,7 @@ class Gantt extends Component {
         this.props.form.forEach((f) => {
 
             data.push({
+                end:f.end,
                 hoursReel: f.hoursReel,
                 phase: f.phase,
                 nb: f.nb,
@@ -47,7 +48,7 @@ class Gantt extends Component {
                 dayES: f.jestStart,
                 dayRS: f.jreelStart,
                 dayEE: moment(f.jestStart).clone().add(f.dayEstimated - 1, 'days').valueOf(),
-                dayRE: moment(f.jreelStart).clone().add(f.reelDays - 1, 'days').valueOf(),
+                dayRE: f.end?moment(f.jreelStart).clone().add(f.reelDays - 1, 'days').valueOf():moment().subtract(1,"days").valueOf(),
             })
         })
         if (data.length === 0) return;
@@ -83,8 +84,10 @@ class Gantt extends Component {
 
 
             this.props.actions.replaceEvent(ft.data.map(f => {
+
                 return {
                     id: f.id,
+                    end:f.end,
                     hoursReel: f.elements,
                     phase: f.phase,
                     tache: f.name,

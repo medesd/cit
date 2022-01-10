@@ -36,7 +36,7 @@ const GMQ07 = (props) => {
             x.nonRealise = (x.realise / x.prevues).toFixed(2);
             return x;
         })
-        console.log(form.getFieldsValue())
+
         let totalRealise = res.map(x => x.realise).reduce((f, n) => f + n, 0);
         let totalPrevues = res.map(x => x.prevues).reduce((f, n) => f + n, 0);
 
@@ -62,7 +62,7 @@ const GMQ07 = (props) => {
               labelAlign={"left"}
               onFinish={val => {
                   axios.create().post('/api/gmq07', {...val, data: JSON.stringify(val.donnes)}).then(() => {
-                      console.log('...');
+
                   })
               }}>
             <Form.Item name={"date"} label={"Date"}>

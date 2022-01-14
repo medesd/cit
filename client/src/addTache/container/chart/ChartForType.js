@@ -54,7 +54,7 @@ export const leftPanel = (element) => {
 
     if (element.typeFor === "general") {
         entries = [
-            '<div id="rowheader" style="' + styleWidthCol + ';width: calc(100% - 63.9%)" class="row d-flex justify-content-center name row" id="RowdId_">' +
+            '<div id="rowheader" style="' + styleWidthCol + ';width: calc(100% - 54.9%)" class="row d-flex justify-content-center name row" id="RowdId_">' +
             '<span>' +
             "projet" +
             '</span>' +
@@ -82,14 +82,9 @@ export const leftPanel = (element) => {
             "Date fin" +
             '</span>' +
             '</div>',
-            '<div id="rowheader" style="' + styleWidthCol + ';width: calc(100% - 90.8%)" class="row d-flex justify-content-center name row" id="RowdId_">' +
+            '<div id="rowheader" style="' + styleWidthCol + ';width: calc(100% - 89.8%)" class="row d-flex justify-content-center name row" id="RowdId_">' +
             '<span>' +
-            "Progression" +
-            '</span>' +
-            '</div>',
-            '<div id="rowheader" style="' + styleWidthCol + ';width: calc(100% - 90%)" class="row d-flex justify-content-center name row" id="RowdId_">' +
-            '<span>' +
-            "CR" +
+            "Efficacité" +
             '</span>' +
             '</div>'
         ];
@@ -130,7 +125,7 @@ export const leftPanel = (element) => {
                 '</div>');
         }
         if (element.typeFor === "general") {
-            entries.push('<div id="rowheader' + i + '" style="' + styleWidth + '; width: calc(100% - 63.9%);line-height: 13px" class="row d-flex justify-content-center align-content-center desc row" id="RowdId_">' +
+            entries.push('<div id="rowheader' + i + '" style="' + styleWidth + '; width: calc(100% - 54.9%);line-height: 13px" class="row d-flex justify-content-center align-content-center desc row" id="RowdId_">' +
                 '<span>' + entry.project + '</span>' +
                 '</div>');
 
@@ -186,12 +181,7 @@ export const leftPanel = (element) => {
 
             const prog = (duree / acheves) * 100
 
-            //some logic : prog
-            entries.push('<div id="rowheader' + i + '" style="' + styleWidth + ';width: calc(100% - 90.8%)" class="row d-flex justify-content-center align-content-center desc row" id="RowdId_">' +
-                '<span>' + entry.tachePercent.toFixed(1) + '%</span>' +
-                '</div>');
-
-            entries.push('<div id="rowheader' + i + '" style="' + styleWidth + ';width: calc(100% - 90%)" class="row d-flex justify-content-center align-content-center desc row" id="RowdId_">' +
+            entries.push('<div id="rowheader' + i + '" style="' + styleWidth + ';width: calc(100% - 89.8%)" class="row d-flex justify-content-center align-content-center desc row" id="RowdId_">' +
                 '<span>' + prog.toFixed(1) + '%</span>' +
                 '</div>');
         }

@@ -54,6 +54,7 @@ const EditTache = (props) => {
 
     const onFinish = (values) => {
 
+
         const old = moment(state.currentTache.jestStart).clone();
 
         let cpt = 0;
@@ -84,6 +85,8 @@ const EditTache = (props) => {
             phase: values.phase,
             inex: values.inex
         }
+        
+
 
 
 

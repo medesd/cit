@@ -67,6 +67,11 @@ const COM01 = (props) => {
                             ...f,
                             montant: ((parseFloat(f?.prix || "0") * f['quality']) || 0).toFixed(2)
                         }
+                    case "M":
+                        return {
+                            ...f,
+                            montant: ((parseFloat(f?.prix || "0") * f['quality']) || 0).toFixed(2)
+                        }
                     default:
                         return 0;
                 }
@@ -102,9 +107,10 @@ const COM01 = (props) => {
                         setState(f => ({...f, submittedData: true}))
                     }}
                 >
+
                     <Form.Item
-                        label="Projet"
-                        name="projet"
+                        label="Référence de Projet"
+                        name="ref"
                         rules={[{required: true, message: ''}]}
                     >
                         <Select showSearch onChange={(x, e) => {
@@ -117,8 +123,17 @@ const COM01 = (props) => {
                         }
                         }>
                             <Option value={null} children={null}/>
-                            {state.projects.map(x => <Option key={x.id} value={x.name}>{x.name}</Option>)}
+                            {state.projects.map(x => <Option key={x.id} value={x.ref}>{x.ref}</Option>)}
                         </Select>
+                    </Form.Item>
+
+
+                    <Form.Item
+                        label="Projet"
+                        name="name"
+                        rules={[{required: true, message: ''}]}
+                    >
+                        <Input disabled/>
                     </Form.Item>
                     <Form.Item
                         label="Marche N°"
@@ -193,6 +208,7 @@ const COM01 = (props) => {
                                                             <Option value={"%"}>%</Option>
                                                             <Option value={"U"}>U</Option>
                                                             <Option value={"F"}>F</Option>
+                                                            <Option value={"M"}>M²</Option>
                                                         </Select>
                                                     </Form.Item>
                                                 </td>
@@ -493,9 +509,6 @@ const COM01 = (props) => {
                 <div className="row">
                     <div className="col-xs">MAITRE
                         D'OUVRAGE/CLIENT: {state.form?.maitreDouvrage || state.form?.client}</div>
-                </div>
-                <div className="row">
-                    <div className="col-xs">ICE: {state.form?.ice}</div>
                 </div>
                 <div className="row mt-3 mb-0 justify-content-center">
                     <div className="col-xs"><h2 className="m-0">

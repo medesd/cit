@@ -365,6 +365,7 @@ public class ProjectService {
 
     public List<Map<String, Object>> getProjectTachesAntLot(Long Pid, String lot) {
         return projectRep.getById(Pid).getTaches().stream().map(f -> {
+            //f.setJreel(String.valueOf(Integer.parseInt(f.getJreel())+1));
             var map = mapper.convertOneValue(f);
             map.put("elements", f.getElements().size());
             return map;

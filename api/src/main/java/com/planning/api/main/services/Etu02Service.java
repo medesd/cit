@@ -11,11 +11,13 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.*;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.time.YearMonth;
@@ -34,7 +36,7 @@ public class Etu02Service {
     }
 
 
-    public File generateChart(Long id, String lot) {
+    public File generateChart(Long id, String lot, MultipartFile file) {
 
 
         var project = projectRep.getById(id);
@@ -61,6 +63,8 @@ public class Etu02Service {
             tache.setEstHours(String.valueOf(x.getComplete()));
             tache.setReelHours(String.valueOf(x.getElements().size()));
             tache.setConceptType(x.getPhase());
+            tache.setRealReel(x.getRealJreel());
+            tache.setRealEst(x.getRealJest());
 
 
             return tache;
@@ -77,8 +81,6 @@ public class Etu02Service {
 
 
         try {
-
-
             List<Date> dates = data.getTaches().stream().map(TacheForChart::getDayEstEnd).collect(Collectors.toList());
             dates.addAll(data.getTaches().stream().map(TacheForChart::getDayReelEnd).collect(Collectors.toList()));
 
@@ -88,7 +90,8 @@ public class Etu02Service {
             dates.addAll(data.getTaches().stream().map(TacheForChart::getDayReelStart).collect(Collectors.toList()));
             Date min = dates.stream().max(Date::compareTo).get();
 
-            if (max.toInstant().getEpochSecond() < min.toInstant().getEpochSecond()) return null;
+            // if (max.toInstant().getEpochSecond() <= min.toInstant().getEpochSecond()) return null;
+            System.out.println("begin");
 
             data.setEndDate(max);
             data.setStartDate(min);
@@ -107,8 +110,10 @@ public class Etu02Service {
 
             }
 
-            XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream("template.xlsx"));
+            XSSFWorkbook wb = new XSSFWorkbook(file.getInputStream());
+
             FileOutputStream fileOut = new FileOutputStream("z.xlsx");
+
             XSSFSheet sheet1 = wb.getSheetAt(0);
             XSSFCell projectName = sheet1.getRow(4).getCell(4);
             XSSFCell projectRef = sheet1.getRow(5).getCell(4);
@@ -160,8 +165,8 @@ public class Etu02Service {
                 }
 
                 sheet1.getRow(cpt).getCell(3).setCellValue(t.getName());
-                sheet1.getRow(cpt).getCell(4).setCellValue(t.getEst());
-                sheet1.getRow(cpt).getCell(5).setCellValue(t.getReel());
+                sheet1.getRow(cpt).getCell(4).setCellValue(t.getRealEst());
+                sheet1.getRow(cpt).getCell(5).setCellValue(t.getRealReel());
                 sheet1.getRow(cpt).getCell(6).setCellValue(new SimpleDateFormat("dd/MM/yyyy").format(t.getDayEstStart()));
                 sheet1.getRow(cpt).getCell(7).setCellValue(new SimpleDateFormat("dd/MM/yyyy").format(t.getDayEstEnd()));
                 sheet1.getRow(cpt).getCell(8).setCellValue(t.getEstHours());
@@ -222,11 +227,12 @@ public class Etu02Service {
             makeMonthForHeader(wb, sheet1, data.getStartDate(), data.getEndDate(), data.getTaches().size());
 
             wb.write(fileOut);
-
-            fileOut.close();
+            var f = new File("z.xlsx");
+            return f;
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return null;
     }
 

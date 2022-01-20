@@ -11,6 +11,8 @@ public class TacheForChart {
     private String name;
     private int est;
     private int reel;
+    private int realEst;
+    private int realReel;
     private Date dayReelStart;
     private Date dayReelEnd;
     private Date dayEstStart;

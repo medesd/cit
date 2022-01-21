@@ -53,8 +53,8 @@ public class Etu02Service {
 
             var tache = new TacheForChart();
             tache.setName(x.getName());
-            tache.setEst(Integer.parseInt(x.getJest()));
-            tache.setReel(Integer.parseInt(x.getJreel()));
+            tache.setEst(Integer.parseInt(x.getJest()) + 1);
+            tache.setReel(Integer.parseInt(x.getJreel()) + 1);
             tache.setDayReelStart(new Date(TimeUnit.SECONDS.toMillis(x.getJreelStart())));
             tache.setDayReelEnd(cReel.getTime());
             tache.setDayEstStart(new Date(TimeUnit.SECONDS.toMillis(x.getJestStart())));
@@ -74,8 +74,11 @@ public class Etu02Service {
         var data = new Data();
         data.setProjectName(project.getName());
         data.setProjectRef(project.getRef());
+
+
+        var position = project.getDateDebut().getDay();
         //TODO:set day position
-        data.setStartCell(14);
+        data.setStartCell(14 + position + 1);
         data.setTaches(taches);
         data.setDateDebut(project.getDateDebut());
 

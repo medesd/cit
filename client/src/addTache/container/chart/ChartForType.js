@@ -553,7 +553,7 @@ export const rightPanel = (element) => {
                 if (settings.dow[day] === settings.dow[0] || settings.dow[day] === settings.dow[6]) {
 
                     dowArr.push(
-                        '<div style="color: #fff;background-color: rgb(0, 0, 0);z-index: 30;border: 0" class="row vh-100 day ' + dayClass + '"' +
+                        '<div style="color: #fff;background-color: rgb(0, 0, 0);z-index: 30;position: relative;border: 0" class="row vh-100 day ' + dayClass + '"' +
                         ' id="dw-' + tools.genId(rday) +
                         '" data-repdate="' + DatePrototype.getRepDate(rday, settings.scale) + '">' +
                         '<div class="fn-label">' + settings.dow[day] + '</div></div>');

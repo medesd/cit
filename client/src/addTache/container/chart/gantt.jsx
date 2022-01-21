@@ -6,8 +6,6 @@ import moment from "moment";
 import {connect} from "react-redux";
 import Modals from '../edit/Modals';
 import Button from "antd-button-color";
-import html2canvas from 'html2canvas';
-import {jsPDF} from "jspdf";
 import {withRouter} from "react-router";
 import axios from "axios";
 import {bindActionCreators} from "redux";
@@ -15,6 +13,8 @@ import * as types from "../../../redux/actions/actions";
 import {message, Popconfirm} from "antd";
 import {DeleteOutlined, EditOutlined} from "@ant-design/icons";
 import {ParseJwt} from "../../../tools";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 class Gantt extends Component {
     projectDate = null;
@@ -168,25 +168,25 @@ class Gantt extends Component {
                 <Modals closeModal={this.closeModal} modal={this.state.modal} data={this.state.data}/>
                 <div className="row justify-content-center">
                     <div className="col-xs">
-                        <Button hidden={this.props.form.length === 0} onClick={() => {
+                        <Button hidden={this.props.form.length === 0} onClick={async () => {
                             document.getElementsByClassName('action').item(0).style.display = "none";
                             document.getElementsByClassName('action').item(1).style.display = "none";
-                            document.getElementById('navbar').classList.remove("d-flex");
-                            document.getElementById('navbar').classList.add("d-none");
-                            let pdf = new jsPDF('landscape', "px", 'a3');
+
+                            for (let i = 0; i < document.getElementsByClassName('action').length; i++) {
+                                document.getElementsByClassName('action').item(i).style.display = "none";
+                            }
+                            let pdf = new jsPDF('landscape', "px", 'a4');
+
+
                             const cw = document.getElementsByClassName('dataPanel').item(0).offsetWidth + document.getElementsByClassName('leftPanel').item(0).offsetWidth;
-                            document.getElementsByClassName('bottom').item(0).style.display = "none";
-                            const widthold = document.getElementsByClassName('gantt').item(0).style.width;
+                            const withhold = document.getElementsByClassName('gantt').item(0).style.width;
                             document.getElementsByClassName('gantt').item(0).style.width = cw + 'px';
-                            html2canvas(document.querySelector("#capture"), {scale: window.devicePixelRatio}).then(canvas => {
-                                let height;
+                            html2canvas(document.querySelector("#capture"), {scale: 2}).then(canvas => {
                                 let y;
                                 if ((canvas.height / window.devicePixelRatio) > pdf.internal.pageSize.getHeight()) {
-                                    height = pdf.internal.pageSize.getHeight() - 32;
                                     y = 15;
                                 } else {
-                                    height = canvas.height / window.devicePixelRatio;
-                                    const rest = pdf.internal.pageSize.getHeight() - height;
+                                    const rest = pdf.internal.pageSize.getHeight() - (canvas.height / window.devicePixelRatio);
                                     y = rest / 2
                                 }
 
@@ -203,11 +203,11 @@ class Gantt extends Component {
                                 }
 
 
-                                pdf.addImage(canvas.toDataURL(), 'JPEG', x, y, width, height);
+                                pdf.addImage(canvas.toDataURL(), 'JPEG', x, y, width, 0);
 
                             }).then(() => {
-                                document.getElementsByClassName('gantt').item(0).style.width = widthold;
-                                pdf.save();
+                                document.getElementsByClassName('gantt').item(0).style.width = withhold;
+                                //pdf.save();
                                 const btns = [...document.getElementsByClassName('ant-btn')];
                                 document.getElementsByClassName('gantt').item(0).style.display = "none";
                                 document.getElementsByClassName('btn').item(0);
@@ -216,14 +216,13 @@ class Gantt extends Component {
                                 })
 
 
-                                let pdf2 = new jsPDF('portrait', "px", 'a4');
                                 const width = document.body.style.width;
                                 document.body.style.width = '950px';
                                 document.body.style.width = '950px';
 
-                                html2canvas(document.body, {scale: 1}).then(canvas => {
+                                html2canvas(document.getElementById("printer"), {scale: 1}).then(canvas => {
                                     canvas.style.opacity = '1';
-                                    pdf2.addImage(canvas.toDataURL(), 'JPEG', 25, 15, canvas.width / 2.4, pdf2.internal.pageSize.getHeight() - 32);
+                                    pdf.addPage(null, "portrait").addImage(canvas.toDataURL(), 'JPEG', 0, 15, 440, 0)
                                 }).then(() => {
                                     btns.forEach((f) => {
                                         f.style.display = "block";
@@ -240,9 +239,7 @@ class Gantt extends Component {
                                         document.getElementsByClassName('action').item(i).style.display = "flex";
                                         document.getElementsByClassName('action').item(i).style.justifyContent = "center";
                                     }
-
-
-                                    pdf2.save();
+                                    pdf.save();
                                 })
 
 
@@ -259,13 +256,21 @@ class Gantt extends Component {
 }
 
 
-function mapStateToProps(state) {
+function
+
+mapStateToProps(state) {
     return {
         form: state.currencyReducer,
         project: state.projectReducer
     };
 }
 
-const dtp = (dsp) => ({actions: bindActionCreators(types, dsp)})
+const
+    dtp = (dsp) => ({actions: bindActionCreators(types, dsp)})
 
-export default connect(mapStateToProps, dtp)(withRouter(Gantt));
+export default connect(mapStateToProps, dtp)
+
+(
+    withRouter(Gantt)
+)
+;

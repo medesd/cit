@@ -12,7 +12,7 @@ function Main() {
     if (!["Technique", "Structure", "VRD", "Metreur"].includes(atob(query))) return null;
 
     return (
-        <div className="container">
+        <div id="printer" className="container">
             <Header/>
             <hr/>
             <Container/>

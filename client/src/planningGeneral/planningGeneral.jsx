@@ -206,7 +206,7 @@ const PlanningGeneral = (props) => {
     }
 
 
-    return <div style={{width:"90vw"}} className="mx-auto">
+    return <div style={{width: "90vw"}} id="printPlanningGeneral" className="mx-auto">
 
         <div className="row border mb-3 flex-nowrap justify-content-between">
             <div className="col-xs"><img className="border h-100" width={100} src={image} alt=""/></div>
@@ -383,9 +383,9 @@ const PlanningGeneral = (props) => {
                         const cw = document.getElementsByClassName('dataPanel').item(0).offsetWidth + document.getElementsByClassName('leftPanel').item(0).offsetWidth;
                         document.getElementsByClassName('bottom').item(0).style.display = "none";
                         document.getElementsByClassName('gantt').item(0).style.width = cw + 'px';
-                        document.querySelector(".container-fluid").style.width = (cw + 100) + "px";
+                        document.getElementById("printPlanningGeneral").style.width = (cw + 100) + "px";
 
-                        html2canvas(document.querySelector(".container-fluid"), {scale: window.devicePixelRatio}).then(canvas => {
+                        html2canvas(document.getElementById("printPlanningGeneral"), {scale: window.devicePixelRatio}).then(canvas => {
                             let width;
                             if ((canvas.width / window.devicePixelRatio) > pdf.internal.pageSize.getWidth()) {
                                 width = pdf.internal.pageSize.getWidth() - 32;
@@ -398,7 +398,7 @@ const PlanningGeneral = (props) => {
 
                         }).then(() => {
                             pdf.save();
-                            document.querySelector(".container-fluid").style.width = "100%"
+                            document.getElementById("printPlanningGeneral").style.width = "100%"
                             document.getElementsByClassName('gantt').item(0).style.width = "100%"
                             document.getElementById('filter').classList.add("d-flex");
                             document.getElementById('filter').classList.remove("d-none");

@@ -4,10 +4,7 @@ import com.planning.api.main.services.Etu02Service;
 import lombok.SneakyThrows;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +22,7 @@ public class Etu02Ctrl {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('USER')")
     @SneakyThrows
     public String generatePlanning(@RequestParam("file") MultipartFile file, @RequestParam("id") Long id, @RequestParam("lot") String lot) {
         File resource = etu02Service.generateChart(id, lot, file);

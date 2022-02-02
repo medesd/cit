@@ -3,7 +3,7 @@ import {DatePicker, Form, Input, InputNumber, Select} from "antd";
 import {useParams, withRouter} from "react-router";
 import axios from "axios";
 import moment from "moment";
-import Logo from "../logo.jpg";
+import Logo from "../assets/logo.jpg";
 import Button from "antd-button-color";
 import {jsPDF} from "jspdf";
 import html2canvas from "html2canvas";

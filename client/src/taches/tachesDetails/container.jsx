@@ -12,7 +12,7 @@ import {bindActionCreators} from "redux";
 import * as types from "../../redux/actions/actions";
 import {connect} from "react-redux";
 import axios from "axios";
-import image from "../../addTache/header/image002.png";
+import image from "../../assets/image002.png";
 import {Calendar, Checkbox} from "antd";
 import $ from 'jquery';
 import {ParseJwt} from "../../tools";

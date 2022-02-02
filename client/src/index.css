@@ -8,6 +8,11 @@
 
 }
 
+.bg-black {
+    background-color: black;
+    color: #ccc;
+
+}
 
 .editFormCol .ant-form-item-control {
     min-width: 100% !important;

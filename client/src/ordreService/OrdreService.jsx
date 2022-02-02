@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {DatePicker, Form, Input, Radio, Select} from "antd";
 import Button from "antd-button-color";
-import Logo from '../logo.jpg';
+import Logo from '../assets/logo.jpg';
 import {jsPDF} from "jspdf";
 import html2canvas from "html2canvas";
 import axios from "axios";

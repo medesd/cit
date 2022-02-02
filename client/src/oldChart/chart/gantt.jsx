@@ -4,15 +4,15 @@ import './jquery.fn.gantt';
 import $ from 'jquery';
 import moment from "moment";
 import {connect} from "react-redux";
-import Modals from '../edit/Modals';
+import Modals from '../container/edit/Modals';
 import Button from "antd-button-color";
 import {withRouter} from "react-router";
 import axios from "axios";
 import {bindActionCreators} from "redux";
-import * as types from "../../../redux/actions/actions";
+import * as types from "../../redux/actions/actions";
 import {message, Popconfirm} from "antd";
 import {DeleteOutlined, EditOutlined} from "@ant-design/icons";
-import {ParseJwt} from "../../../tools";
+import {ParseJwt} from "../../tools";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 

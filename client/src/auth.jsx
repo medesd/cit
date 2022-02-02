@@ -3,7 +3,7 @@ import {Form, Input, notification} from 'antd';
 import {LockOutlined, UserOutlined} from "@ant-design/icons";
 import Button from "antd-button-color";
 import axios from "axios";
-import image from './login.png';
+import image from './assets/login.png';
 
 const Auth = () => {
     const onFinish = async values => {

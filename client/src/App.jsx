@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import Main from "./addTache/main";
 import PContainer from './taches/tachesDetails/container';
 import * as types from './redux/actions/actionTypes';
 import {BrowserRouter as Router, Link, NavLink, Redirect, Route, Switch} from "react-router-dom";
@@ -7,7 +6,7 @@ import {store} from "./redux/store";
 import AjouteEmployee from "./employee/ajouteEmployee";
 import Sommaire from "./projectDetails/sommaire";
 import AllProjects from "./projects/allProjects";
-import {Dropdown, notification, Menu} from 'antd';
+import {Dropdown, Menu, notification} from 'antd';
 import moment from "moment";
 import LotMain from "./lots/lotMain";
 import Dash from "./manage/dash";
@@ -49,6 +48,8 @@ import ACH05 from "./ACH05";
 import SUI02 from "./SUI02";
 import SUI05 from "./SUI05";
 import GMQ07 from "./GMQ07";
+import ETU02 from "./ETU02";
+import Projects from "./Archive/Projects";
 
 
 function App(props) {
@@ -165,13 +166,16 @@ function App(props) {
                                 <PlanningGeneral/>
                             </Route>
                             <Route path="/project-details/:id">
-                                <Main/>
+                                <ETU02/>
                             </Route>
                             <Route path="/lots/:id">
                                 <LotMain/>
                             </Route>
                             <Route path="/etu-04">
                                 <ETU04/>
+                            </Route>
+                            <Route path="/archive">
+                                <Projects/>
                             </Route>
 
                             {/*TODO:SUIVI*/}

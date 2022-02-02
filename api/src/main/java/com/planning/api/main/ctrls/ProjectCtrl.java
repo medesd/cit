@@ -27,11 +27,18 @@ public class ProjectCtrl {
         return projectService.addProject(project, int1);
     }
 
+
+    @GetMapping("/generateRef")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Map<String, Object> generateRef(@RequestParam("letter") String letter, @RequestParam("year") int year, @RequestParam(value = "type", required = false) String type) {
+        return projectService.generateRef(letter, year, type);
+    }
+
     @GetMapping
     @PreAuthorize("hasRole('USER')")
     public List<Map<String, Object>> getAllProjects(@RequestParam(name = "filter", required = false) String filter, @RequestParam(name = "main", required = false) boolean main) {
         if (filter == null) filter = "";
-        return projectService.getAllProjects(filter, main);
+        return projectService.getAllProjects(filter, main, false);
     }
 
     @GetMapping(path = "/{id}")
@@ -132,6 +139,19 @@ public class ProjectCtrl {
     @PreAuthorize("hasRole('ADMIN')")
     public Map<String, Object> getInterventionByProject(@PathVariable("pid") Long pid) {
         return projectService.getInterventionByProject(pid);
+    }
+
+    @GetMapping("/archived")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Map<String, Object>> getProjectsArchived(@RequestParam(name = "filter", required = false) String filter, @RequestParam(name = "main", required = false) boolean main) {
+        if (filter == null) filter = "";
+        return projectService.getAllProjects(filter, main, true);
+    }
+
+    @GetMapping("/archived/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Long restoreProject(@PathVariable("id") Long id){
+        return projectService.restoreProject(id);
     }
 
 

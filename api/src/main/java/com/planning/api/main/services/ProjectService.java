@@ -5,12 +5,14 @@ import com.planning.api.main.reps.*;
 import com.planning.api.utils.Mapper;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.planning.api.utils.Tools.*;
@@ -87,9 +89,9 @@ public class ProjectService {
     }
 
 
-    public List<Map<String, Object>> getAllProjects(String filter, boolean main) {
+    public List<Map<String, Object>> getAllProjects(String filter, boolean main, boolean archived) {
 
-        var projects = projectRep.findAll();
+        var projects = projectRep.findAll().stream().filter(x -> x.isArchived() == archived).collect(Collectors.toList());
         var employees = employeeRep.findAll();
         if (projects.isEmpty()) return null;
 
@@ -132,7 +134,7 @@ public class ProjectService {
     public Map<String, Object> editProject(Project project, Long id) {
         var p = projectRep.findById(id);
 
-        var allProjects = projectRep.findAll().stream().filter(x -> x.getId() != id).collect(Collectors.toList());
+        var allProjects = projectRep.findAll().stream().filter(x -> x.getId() != id && !x.isArchived()).collect(Collectors.toList());
 
         if (p.isEmpty()) return null;
         var projectOld = p.get();
@@ -171,7 +173,9 @@ public class ProjectService {
 
     public void deleteProject(Long Pid) {
         if (!projectRep.existsById(Pid)) return;
-        projectRep.deleteById(Pid);
+        var prg = projectRep.getById(Pid);
+        prg.setArchived(true);
+        projectRep.save(prg);
     }
 
     public Map<String, Object> getProjectByRef(String ref) {
@@ -192,8 +196,6 @@ public class ProjectService {
 
         //var now = new SimpleDateFormat("yyyy-MM-dd").parse(date);
         if (p.getDateDebut() == null) ini = now;
-
-
 
 
         long diffInMillis = now.getTimeInMillis() - ini.getTimeInMillis();
@@ -236,7 +238,7 @@ public class ProjectService {
         col1.addAll(empFiltered.stream().map(Employee::getUsername).collect(Collectors.toList()));
         col1.add("Total");
         pmNames.add(col1);
-        var prgNames = projectRep.findAll().stream().map(Project::getName).collect(Collectors.toList());
+        var prgNames = projectRep.findAll().stream().filter(x -> !x.isArchived()).map(Project::getName).collect(Collectors.toList());
 
         prgNames = prgNames.stream().filter(f -> elementFiltered.stream().map(Element::getProjectName).collect(Collectors.toList()).contains(f)).collect(Collectors.toList());
 
@@ -351,7 +353,7 @@ public class ProjectService {
 
 
     public List<Map<String, Object>> getProjectsNames() {
-        var projects = projectRep.findAll();
+        var projects = projectRep.findAll().stream().filter(x -> !x.isArchived()).collect(Collectors.toList());
         if (projects.isEmpty()) return null;
 
         return projects.stream().map(x -> {
@@ -400,12 +402,12 @@ public class ProjectService {
     public List<HashMap<Object, Object>> getPlanningGeneral(String resp, String filter, String type) {
         List<Project> projects;
         if (resp != null && !resp.isEmpty()) {
-            projects = projectRep.findAll().stream().filter(x -> (x.getPiloteMetreur() != null && x.getPiloteMetreur().contains(resp)) ||
+            projects = projectRep.findAll().stream().filter(x -> !x.isArchived()).filter(x -> (x.getPiloteMetreur() != null && x.getPiloteMetreur().contains(resp)) ||
                     (x.getPiloteStructure() != null && x.getPiloteStructure().contains(resp)) ||
                     (x.getPiloteVRD() != null && x.getPiloteVRD().contains(resp)) ||
                     (x.getPiloteTechnique() != null && x.getPiloteTechnique().contains(resp))).collect(Collectors.toList());
         } else {
-            projects = projectRep.findAll();
+            projects = projectRep.findAll().stream().filter(x -> !x.isArchived()).collect(Collectors.toList());
         }
         if (type != null && !type.isEmpty()) {
             projects = projects.stream().filter(x -> x.getEtat().contains(type.toLowerCase())).collect(Collectors.toList());
@@ -520,6 +522,61 @@ public class ProjectService {
             inv.remove("project");
         p.put("intervention", inv);
         return p;
+    }
+
+    public Map<String, Object> generateRef(String letter, int year, String type) {
+
+        var refs = projectRep.findAll().stream().filter(x -> !x.isArchived()).filter(x -> {
+            if (type == null) return true;
+            else return Long.parseLong(type) != x.getId();
+        }).map(x -> x.getRef().substring(4)).collect(Collectors.toList());
+
+        var data = refs.stream().filter(x -> x.substring(5).contains(String.valueOf(year))).map(x -> x.substring(0, x.lastIndexOf('/'))).collect(Collectors.toList());
+
+
+        var letters = data.stream().filter(x -> x.toLowerCase().contains(letter.toLowerCase())).collect(Collectors.toList());
+
+        var max = letters.stream().map(x -> Integer.parseInt(x.substring(1))).max(Integer::compareTo);
+        var map = new HashMap<String, Object>();
+
+        if (max.isEmpty()) {
+            map.put("letter", letter);
+            map.put("num", "001");
+            map.put("year", year);
+            return map;
+        }
+
+
+        switch (String.valueOf(max.get() + 1).length()) {
+            case 1:
+                map.put("letter", letter);
+                map.put("num", "00" + (max.get() + 1));
+                map.put("year", year);
+                return map;
+            case 2:
+                map.put("letter", letter);
+                map.put("num", "0" + (max.get() + 1));
+                map.put("year", year);
+                return map;
+            case 3:
+                map.put("letter", letter);
+                map.put("num", (max.get() + 1));
+                map.put("year", year);
+                return map;
+            default:
+                map.put("letter", letter);
+                map.put("num", "001");
+                map.put("year", year);
+                return map;
+        }
+    }
+
+    public Long restoreProject(Long Pid) {
+        if (!projectRep.existsById(Pid)) return 0L;
+        var prg = projectRep.getById(Pid);
+        prg.setArchived(false);
+        projectRep.save(prg);
+        return Pid;
     }
 }
 

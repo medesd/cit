@@ -1,13 +1,13 @@
 import React, {useEffect, useRef, useState} from "react";
-import image from '../addTache/header/image002.png';
+import image from '../assets/image002.png';
 import Modal from "antd/es/modal";
 import DatePicker from "antd/es/date-picker";
 import Button from "antd-button-color";
 import {Form, Select} from "antd";
 import moment from "moment";
 import axios from "axios";
-import '../addTache/container/chart/jquery.fn.gantt'
-import '../addTache/container/chart/gantt.css'
+import '../oldChart/chart/jquery.fn.gantt'
+import '../oldChart/chart/gantt.css'
 import {withRouter} from "react-router";
 import $ from "jquery";
 

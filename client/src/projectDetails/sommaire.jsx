@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import axios from "axios";
 import moment from "moment";
 import {DatePicker} from 'antd';
-import image from '../addTache/header/image002.png'
+import image from '../assets/image002.png'
 
 const {RangePicker} = DatePicker;
 

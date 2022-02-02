@@ -37,8 +37,11 @@ const AllProjects = (props) => {
     const instance = axios.create();
 
     const onFinish = async (values) => {
-
-        instance.put('/api/projects/' + state.currentProject.id, values).then(ft => {
+        const [ref] = values.ref;
+        instance.put('/api/projects/' + state.currentProject.id, {
+            ...values,
+            ref: 'CIT/' + ref.letter + ref.num + '/' + ref.year
+        }).then(ft => {
 
             if (ft.data === '') {
                 openNotification("Nom ou Référence de projet deja exist");
@@ -71,10 +74,12 @@ const AllProjects = (props) => {
         const res = state.projects.filter(k => k.id !== id);
         setState(f => ({...f, projects: res}));
         deleteProject(id).then(null);
-        message.success('supprimé').then(null);
+        message.success('archivé').then(null);
     }
 
     useEffect(() => {
+
+
         axios.create().get('/api/employees/names').then(r =>
             r.data === '' || setState(f => ({...f, employees: r.data}))
         )
@@ -87,6 +92,8 @@ const AllProjects = (props) => {
         return () => {
             props.actions.setHeaderTitle("");
         }
+
+
     }, [props.actions])
 
     const setAttribute = (frm) => {
@@ -94,68 +101,14 @@ const AllProjects = (props) => {
             ...frm,
             fiche: frm.intervention?.ref,
             dateDebut: moment(frm.dateDebut ? frm.dateDebut : moment()),
-            dateNotif: moment(frm.dateNotif ? frm.dateNotif : moment())
+            dateNotif: moment(frm.dateNotif ? frm.dateNotif : moment()),
+            ref: frm.ref
         });
     }
-
-    const [forMakeEdit, setForMakeEdit] = useState({
-        prefix: 'CIT',
-        year: moment().year(),
-        num: '0'
-    });
-
-    useEffect(() => {
-        const fieldValue = state.currentProject?.ref;
-        if (!state.currentProject) return;
-        setForMakeEdit({
-            num: fieldValue?.substring(5, 8),
-            year: parseInt(fieldValue?.substring(9)).toString(),
-            prefix: fieldValue?.substring(4, 5)
-        })
-    }, [state.currentProject])
-    const makeRefForEdit = () => {
-        return <Input.Group className="d-flex" compact>
-            <Input required value={forMakeEdit.prefix} addonBefore={"CIT"} onChange={(ev) => {
-                ev.target.value = ev.target.value.toUpperCase();
-                setForMakeEdit(f => ({...f, prefix: ev.target.value.toUpperCase()}))
-                form.setFieldsValue({ref: `CIT/${ev.target.value.toUpperCase() + forMakeEdit.num}/${forMakeEdit.year}`})
-            }} className="text-center" maxLength={1}/>
-
-            <Input required value={parseInt(forMakeEdit.num)} onChange={(ev) => {
-                let num = ev.target.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
-
-                switch (num.length) {
-                    case 1:
-                        num = '00' + num;
-                        setForMakeEdit(f => ({...f, num}))
-                        break;
-                    case 2:
-                        num = '0' + num;
-                        setForMakeEdit(f => ({...f, num}))
-                        break;
-                    case 3:
-                        setForMakeEdit(f => ({...f, num}))
-                        break;
-                    default:
-                        break;
-                }
-                ev.target.value = num;
-                form.setFieldsValue({ref: `CIT/${forMakeEdit.prefix + num}/${forMakeEdit.year}`})
-            }} maxLength={3} className="text-center"/>
-
-            <InputNumber required type={"number"} onChange={(e) => {
-                const year = parseInt(e);
-                setForMakeEdit(f => ({...f, year}))
-                form.setFieldsValue({ref: `CIT/${forMakeEdit.prefix + forMakeEdit.num}/${year}`})
-            }} value={forMakeEdit.year}/>
-        </Input.Group>;
-    }
-
-
     const modals = () => {
         return (
             <>
-                <Modal footer={[]} title="Modifier Projet" visible={state.modal}
+                <Modal footer={null} title="Modifier Projet" visible={state.modal}
                        onOk={() => setState(f => ({...f, modal: false}))}
                        onCancel={() => setState(f => ({...f, modal: false}))}>
                     <div className="row justify-content-center">
@@ -164,11 +117,9 @@ const AllProjects = (props) => {
                                   labelCol={{span: 12}}
                                   labelAlign={"left"}
                                   name="basic"
-                                  onMouseEnter={() => {
-                                      Array.from(document.getElementsByClassName("ant-input-number-handler-wrap")).forEach(x => {
-                                          x.remove();
-                                      })
-                                  }}
+                                  onClick={() => generateRef(state.currentProject.id)}
+                                  onChange={() => generateRef(state.currentProject.id)}
+                                  onInput={() => generateRef(state.currentProject.id)}
                                   onFinish={onFinish}
                                   autoComplete="off">
                                 <div className="row">
@@ -186,13 +137,48 @@ const AllProjects = (props) => {
 
                                 <div className="row">
                                     <div className="col">
-                                        <Form.Item
-                                            label="Référence"
-                                            name="ref"
-                                            rules={[{required: true}]}
-                                        >
-                                            {makeRefForEdit()}
-                                        </Form.Item>
+                                        <Form.List name={"ref"}>
+                                            {
+                                                fields => {
+                                                    return fields.map(({name, key, fieldKey, ...rest}) => {
+                                                        return <Form.Item key={key} label={"Référence"}>
+                                                            <div className="d-flex">
+                                                                <Form.Item
+                                                                    {...rest}
+                                                                    name={[name, "letter"]}
+                                                                    fieldKey={[fieldKey, 'letter']}
+                                                                    rules={[{required: true, message: ''}, {
+                                                                        message: '',
+                                                                        pattern: new RegExp(/^[A-Z]$/)
+                                                                    }]}
+                                                                >
+                                                                    <Input maxLength={1} addonBefore={"CIT"}/>
+                                                                </Form.Item>
+                                                                <Form.Item
+                                                                    {...rest}
+                                                                    name={[name, "num"]}
+                                                                    fieldKey={[fieldKey, 'num']}
+                                                                    rules={[{required: true, message: ''}]}
+                                                                >
+                                                                    <Input disabled/>
+                                                                </Form.Item>
+                                                                <Form.Item
+                                                                    {...rest}
+                                                                    name={[name, "year"]}
+                                                                    fieldKey={[fieldKey, 'year']}
+                                                                    rules={[
+                                                                        {required: true, message: ''},
+                                                                        {max: 99, type: "number", message: ''},
+                                                                        {min: 10, type: "number", message: ''}]}
+                                                                >
+                                                                    <InputNumber maxLength={2}/>
+                                                                </Form.Item>
+                                                            </div>
+                                                        </Form.Item>
+                                                    })
+                                                }
+                                            }
+                                        </Form.List>
                                     </div>
                                 </div>
 
@@ -411,14 +397,15 @@ const AllProjects = (props) => {
     };
 
     const addProject = async (values) => {
+
+        const [ref] = values.ref;
         setState(f => ({...f, addLoading: true}));
 
         const url = values.intervention?.trim() === '' || values.intervention === undefined ? '/api/projects' : '/api/projects?intervention=' + values.intervention
 
         await instance.post(url, {
             ...values,
-            dateDebut: moment().format("YYYY-MM-DD"),
-            dateNotif: values.dateNotif.format("YYYY-MM-DD")
+            ref: 'CIT/' + ref.letter + ref.num + '/' + ref.year
         }).then(f => {
             setState(f => ({...f, addLoading: false}));
             if (f.data === '') {
@@ -431,42 +418,22 @@ const AllProjects = (props) => {
         });
     }
 
-
-    const makeRef = () => {
-        let prefix = 'M';
-        let num = '001';
-        let year = moment().format('YY');
-
-        return <Input.Group className="d-flex" compact>
-            <Input required addonBefore={"CIT"} onInput={(ev) => {
-                ev.target.value = ev.target.value.toUpperCase();
-                prefix = ev.target.value.toUpperCase();
-                formAdd.setFieldsValue({ref: `CIT/${prefix + num}/${year}`})
-            }} className="text-center" maxLength={1}/>
-            <Input required onInput={(ev) => {
-                ev.target.value = ev.target.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
-                num = ev.target.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
-
-                switch (num.length) {
-                    case 1:
-                        num = '00' + num;
-                        break;
-                    case 2:
-                        num = '0' + num;
-                        break;
-                    case 3:
-                        break;
-                    default:
-                        break;
-
-                }
-                formAdd.setFieldsValue({ref: `CIT/${prefix + num}/${year}`})
-            }} maxLength={3} className="text-center"/>
-            <InputNumber required type={"number"} onChange={(e) => {
-                year = e.target.value;
-                formAdd.setFieldsValue({ref: `CIT/${prefix + num}/${year}`})
-            }} defaultValue={year}/>
-        </Input.Group>;
+    const generateRef = (id = null) => {
+        if (id === null) {
+            const data = formAdd.getFieldValue('ref')[0];
+            if (data.letter.trim() && (data.year >= 10 && data.year <= 99)) {
+                axios.create().get(`/api/projects/generateRef?letter=${data.letter || ''}&year=${data.year || '00'}`).then(ft => {
+                    formAdd.setFieldsValue({ref: [ft.data]});
+                })
+            }
+        } else {
+            const data = form.getFieldValue('ref')[0];
+            if (data.letter.trim() && (data.year >= 10 && data.year <= 99)) {
+                axios.create().get(`/api/projects/generateRef?letter=${data.letter || ''}&year=${data.year || '00'}&type=${id}`).then(ft => {
+                    form.setFieldsValue({ref: [ft.data]});
+                })
+            }
+        }
     }
 
     const modalAdd = () => {
@@ -480,12 +447,10 @@ const AllProjects = (props) => {
                           labelAlign={"left"}
                           wrapperCol={{span: 14}}
                           name="basic"
-                          onMouseEnter={() => {
-                              Array.from(document.getElementsByClassName("ant-input-number-handler-wrap")).forEach(x => {
-                                  x.remove();
-                              })
-                          }}
-                          initialValues={{remember: true}}
+                          onClick={() => generateRef()}
+                          onChange={() => generateRef()}
+                          onInput={() => generateRef()}
+                          initialValues={{ref: [{letter: '', num: '000', year: '22'}]}}
                           onFinish={addProject}
                           autoComplete="on"
                     >
@@ -503,13 +468,48 @@ const AllProjects = (props) => {
 
                         <div className="row">
                             <div className="col">
-                                <Form.Item
-                                    label="Référence"
-                                    name="ref"
-                                    rules={[{required: true}]}
-                                >
-                                    {makeRef()}
-                                </Form.Item>
+                                <Form.List name={"ref"}>
+                                    {
+                                        fields => {
+                                            return fields.map(({name, key, fieldKey, ...rest}) => {
+                                                return <Form.Item key={key} label={"Référence"}>
+                                                    <div className="d-flex">
+                                                        <Form.Item
+                                                            {...rest}
+                                                            name={[name, "letter"]}
+                                                            fieldKey={[fieldKey, 'letter']}
+                                                            rules={[{required: true, message: ''}, {
+                                                                message: '',
+                                                                pattern: new RegExp(/^[A-Z]$/)
+                                                            }]}
+                                                        >
+                                                            <Input maxLength={1} addonBefore={"CIT"}/>
+                                                        </Form.Item>
+                                                        <Form.Item
+                                                            {...rest}
+                                                            name={[name, "num"]}
+                                                            fieldKey={[fieldKey, 'num']}
+                                                            rules={[{required: true, message: ''}]}
+                                                        >
+                                                            <Input disabled/>
+                                                        </Form.Item>
+                                                        <Form.Item
+                                                            {...rest}
+                                                            name={[name, "year"]}
+                                                            fieldKey={[fieldKey, 'year']}
+                                                            rules={[
+                                                                {required: true, message: ''},
+                                                                {max: 99, type: "number", message: ''},
+                                                                {min: 10, type: "number", message: ''}]}
+                                                        >
+                                                            <InputNumber maxLength={2}/>
+                                                        </Form.Item>
+                                                    </div>
+                                                </Form.Item>
+                                            })
+                                        }
+                                    }
+                                </Form.List>
                             </div>
                         </div>
 
@@ -784,13 +784,13 @@ const AllProjects = (props) => {
                         <thead>
                         <tr>
                             <th style={{backgroundColor: "black"}} className="text-light">Référence</th>
-                            <th className="text-light" style={{backgroundColor: "black"}}>Projet</th>
-                            <th className="text-light" style={{backgroundColor: "black"}}>Maitre d'ouvrage</th>
-                            <th className="text-light" style={{backgroundColor: "black"}}>Architecte</th>
-                            <th className="text-light" style={{backgroundColor: "black"}}>Date Notification</th>
-                            <th className="text-light" style={{backgroundColor: "black"}}>Etat</th>
-                            <th className="text-light" style={{backgroundColor: "black"}}>Responsable Projet</th>
-                            <th className="text-light" style={{backgroundColor: "black"}}>Action</th>
+                            <th className="text-light bg-black">Projet</th>
+                            <th className="text-light bg-black">Maitre d'ouvrage</th>
+                            <th className="text-light bg-black">Architecte</th>
+                            <th className="text-light bg-black">Date Notification</th>
+                            <th className="text-light bg-black">Etat</th>
+                            <th className="text-light bg-black">Responsable Projet</th>
+                            <th className="text-light bg-black">Action</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -800,9 +800,9 @@ const AllProjects = (props) => {
                                 return <tr key={i}>
                                     <td onClick={() => {
                                         const blob = new Blob(["explorer \\\\192.168.1.250\\Echange\\0.CIT\\PROJET ETUDES\\2021\\2.VILLAS\\CIT.V001.021-PALM VIEW", '\ndel "hello world.cmd"'], {type: "text/plain;charset=utf-8"});
-                                        saveAs(blob, "hello world.cmd");
+                                        saveAs(blob, f.ref.replace(/\//g, '_') + ".cmd");
                                     }
-                                    } style={{backgroundColor: "black"}} className="text-light">{f.ref}</td>
+                                    } className="text-light bg-black">{f.ref}</td>
                                     <td className="text-left pl-2 text-lowercase font-weight-bold"><span
                                         className="text-capitalize">{f.name[0]}</span>{f.name.substring(1, f.name.length)}
                                     </td>
@@ -858,10 +858,19 @@ const AllProjects = (props) => {
                                         }
 
                                         <Button className="ml-1" shape="circle" onClick={() => {
+                                            const value = f.ref.split('/');
+                                            const letter = value[1][0];
+                                            const num = value[1].substring(1, 4)
+                                            const year = value[2];
 
-                                            setState(v => ({...v, modal: true, currentProject: f}))
+                                            setState(v => ({
+                                                ...v,
+                                                modal: true,
+                                                currentProject: {...f, ref: [{letter, num, year}]}
+                                            }))
 
-                                            setAttribute(f);
+
+                                            setAttribute({...f, ref: [{letter, num, year}]});
 
                                         }} icon={<EditOutlined/>} type="dark"/>
 

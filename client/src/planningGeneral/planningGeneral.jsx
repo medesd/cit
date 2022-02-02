@@ -3,9 +3,9 @@ import React, {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import moment from "moment";
 import $ from "jquery";
-import '../addTache/container/chart/jquery.fn.gantt'
-import '../addTache/container/chart/gantt.css'
-import image from '../addTache/header/GG.png'
+import '../oldChart/chart/jquery.fn.gantt'
+import '../oldChart/chart/gantt.css'
+import image from '../assets/GG.png'
 import Select from "antd/es/select";
 import {Pie} from 'react-chartjs-2';
 import {Input} from "antd";

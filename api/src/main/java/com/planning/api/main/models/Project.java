@@ -25,6 +25,7 @@ public class Project {
     private String ref;
     private Date dateDebut;
     private Date dateNotif;
+    private boolean archived;
     private String nemMarche;
     private String client;
     private String code;

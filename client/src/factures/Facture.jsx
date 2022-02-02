@@ -3,7 +3,7 @@ import {DatePicker, Form, Input, InputNumber, Radio, Select} from "antd";
 import Button from "antd-button-color";
 import axios from "axios";
 import {ArrowLeftOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
-import Logo from '../logo.jpg';
+import Logo from '../assets/logo.jpg';
 import html2canvas from "html2canvas";
 import {jsPDF} from "jspdf";
 import {CutDonnes, SplitNumber} from "../tools";

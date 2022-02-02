@@ -3,7 +3,7 @@ import axios from "axios";
 import Button from "antd-button-color";
 import {EyeOutlined} from "@ant-design/icons";
 import {Drawer} from "antd";
-import Logo from "../logo.jpg";
+import Logo from "../assets/logo.jpg";
 import {CutDonnes, SplitNumber} from "../tools";
 import {jsPDF} from "jspdf";
 import html2canvas from "html2canvas";

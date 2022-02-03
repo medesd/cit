@@ -26,9 +26,9 @@ function Chart({options}) {
     }, [scale])
 
     return (
-        <div style={{minWidth: 960}} className="border">
+        <div style={{minWidth: 960}} id={"chart"} className="border">
             <div className="d-flex w-100">
-                <div className="w-50 h-100">
+                <div id="left-items" className="w-50 h-100">
 
 
                     <div className="border-right border-left" style={style}/>

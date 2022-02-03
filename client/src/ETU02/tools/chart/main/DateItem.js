@@ -119,6 +119,7 @@ const DateItem = ({dateStart, scale, dataLength, weekEnd, dateEnd, lang}) => {
                                             marginTop: 48 * dataLength,
                                             paddingBottom: 48 * dataLength,
                                             backgroundColor: "black",
+                                            position:'relative',
                                             color: "white"
                                         }}>
                                             {x.locale(lang).format('dd')[0].toUpperCase()}

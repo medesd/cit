@@ -37,11 +37,8 @@ const RightPanel = ({data, scale, weekEnd, excludeToolTip, scroll, lang}) => {
 
 
     return (
-        <div ref={dataRef} onWheel={e => {
-            if (scroll < 1) scroll = 1
-            if (scroll > 10) scroll = 10
-            e.currentTarget.scrollLeft += e.currentTarget.scrollWidth / e.deltaY * -scroll;
-        }} onMouseDown={(e) => {
+        <div ref={dataRef}
+            onMouseDown={(e) => {
             const {current} = dataRef;
             if (!current) return;
             current.style.cursor = 'grabbing';
@@ -52,6 +49,7 @@ const RightPanel = ({data, scale, weekEnd, excludeToolTip, scroll, lang}) => {
             window.addEventListener('mousemove', mouseMoveHandler);
             window.addEventListener('mouseup', mouseUpHandler);
         }} style={{cursor: 'grab'}}
+             id={"data-items"}
              className="w-100 table-responsive h-100">
             <DateItem scale={scale} weekEnd={weekEnd} lang={lang} dataLength={data.length} dateStart={moment(start)}
                       dateEnd={moment(end)}/>

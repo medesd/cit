@@ -422,7 +422,7 @@ const AllProjects = (props) => {
         if (id === null) {
             const data = formAdd.getFieldValue('ref')[0];
             if (data.letter.trim() && (data.year >= 10 && data.year <= 99)) {
-                axios.create().get(`/api/projects/generateRef?letter=${data.letter || ''}&year=${data.year || '00'}`).then(ft => {
+                axios.create().get(`/api/projects/generateRef?letter=${data.letter || ''}&year=${data.year || new Date().getFullYear().toString().substring(1)}`).then(ft => {
                     formAdd.setFieldsValue({ref: [ft.data]});
                 })
             }
@@ -450,7 +450,7 @@ const AllProjects = (props) => {
                           onClick={() => generateRef()}
                           onChange={() => generateRef()}
                           onInput={() => generateRef()}
-                          initialValues={{ref: [{letter: '', num: '000', year: '22'}]}}
+                          initialValues={{ref: [{letter: '', num: '000', year: new Date().getFullYear().toString().substring(1)}]}}
                           onFinish={addProject}
                           autoComplete="on"
                     >
@@ -480,7 +480,7 @@ const AllProjects = (props) => {
                                                             fieldKey={[fieldKey, 'letter']}
                                                             rules={[{required: true, message: ''}, {
                                                                 message: '',
-                                                                pattern: new RegExp(/^[A-Z]$/)
+                                                                pattern: new RegExp(/[A-Z0]$/)
                                                             }]}
                                                         >
                                                             <Input maxLength={1} addonBefore={"CIT"}/>

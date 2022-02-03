@@ -5,7 +5,7 @@ import {ParseJwt} from "../../tools";
 import {message, Popconfirm} from "antd";
 import Button from "antd-button-color";
 import {DeleteOutlined, EditOutlined} from "@ant-design/icons";
-import jsPDF from "jspdf";
+import JsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import Edit from "./Edit";
 import axios from "axios";
@@ -28,7 +28,7 @@ const Gantt = (props) => {
             dayES: moment(f.jestStart).clone(),
             dayRS: moment(f.jreelStart).clone(),
             dayEE: moment(f.jestStart).add(f.jest > 0 ? f.jest - 1 : f.jest, "days").clone(),
-            dayRE: !f.end ? moment(f.jreelStart).add(f.jreel > 0 ? f.jreel - 1 : f.jreel, "days").clone() : moment()
+            dayRE: (f.end || f.inex !== 'Interne') ? moment(f.jreelStart).add(f.jreel > 0 ? f.jreel - 1 : f.jreel, "days").clone() : moment()
         }
     })
 
@@ -47,7 +47,7 @@ const Gantt = (props) => {
     return (
         <div>
             <div className="table-responsive">
-                <table className="table table-hover table-bordered table-striped mt-2 text-center">
+                <table id="print-table" className="table table-hover table-bordered table-striped mt-2 text-center">
                     <thead>
                     <tr>
                         <th>Phase</th>
@@ -89,28 +89,28 @@ const Gantt = (props) => {
             </div>
             <div className="row justify-content-center">
 
-                <div className="col-xs w-100">
+                <div id="chart-print" className="col-xs w-100">
                     <Chart options={{lang: 'fr', data, weekEnd: true, type: "details"}}/>
                 </div>
             </div>
             <Edit lot={props.lot} taches={props.taches} project={props.project} closeModal={closeEditModal}
                   modal={state.editModal}/>
             <div className="row justify-content-center">
-                <div className="col-xs">
+                <div className="col-xs mt-2">
                     <Button hidden={props.taches.length === 0} onClick={async () => {
-                        document.getElementsByClassName('action').item(0).style.display = "none";
-                        document.getElementsByClassName('action').item(1).style.display = "none";
-
                         for (let i = 0; i < document.getElementsByClassName('action').length; i++) {
                             document.getElementsByClassName('action').item(i).style.display = "none";
                         }
-                        let pdf = new jsPDF('landscape', "px", 'a4');
+                        let pdf = new JsPDF('landscape', "px", 'a4');
+                        const btns = [...document.getElementsByClassName('ant-btn')];
+                        btns.forEach((f) => {
+                            f.style.display = "none";
+                        })
 
-
-                        const cw = document.getElementsByClassName('dataPanel').item(0).offsetWidth + document.getElementsByClassName('leftPanel').item(0).offsetWidth;
-                        const withhold = document.getElementsByClassName('gantt').item(0).style.width;
-                        document.getElementsByClassName('gantt').item(0).style.width = cw + 'px';
-                        html2canvas(document.querySelector("#capture"), {scale: 2}).then(canvas => {
+                        document.getElementById('data-items').parentElement.style.minWidth = document.getElementById('data-items').scrollWidth + "px";
+                        document.getElementById('chart-print').style.minWidth = (document.getElementById('left-items').scrollWidth+document.getElementById('data-items').scrollWidth) + "px";
+                       // return;
+                        html2canvas(document.querySelector("#chart-print"), {scale: 2}).then(canvas => {
                             let y;
                             if ((canvas.height / window.devicePixelRatio) > pdf.internal.pageSize.getHeight()) {
                                 y = 15;
@@ -135,38 +135,25 @@ const Gantt = (props) => {
                             pdf.addImage(canvas.toDataURL(), 'JPEG', x, y, width, 0);
 
                         }).then(() => {
-                            document.getElementsByClassName('gantt').item(0).style.width = withhold;
-                            //pdf.save();
-                            const btns = [...document.getElementsByClassName('ant-btn')];
-                            document.getElementsByClassName('gantt').item(0).style.display = "none";
-                            document.getElementsByClassName('btn').item(0);
-                            btns.forEach((f) => {
-                                f.style.display = "none";
-                            })
 
+                            document.getElementById('chart-print').style.display = "none";
 
-                            const width = document.body.style.width;
-                            document.body.style.width = '950px';
-                            document.body.style.width = '950px';
-
-                            html2canvas(document.getElementById("printer"), {scale: 1}).then(canvas => {
+                            html2canvas(document.getElementById("printer"), {scale: 2}).then(canvas => {
                                 canvas.style.opacity = '1';
-                                pdf.addPage(null, "portrait").addImage(canvas.toDataURL(), 'JPEG', 0, 15, 440, 0)
+                                pdf.addPage(null, "portrait").addImage(canvas.toDataURL(), 'JPEG', 3, 15, 440, 0)
                             }).then(() => {
                                 btns.forEach((f) => {
                                     f.style.display = "block";
                                 })
-                                document.body.style.width = width;
-                                document.getElementsByClassName('gantt').item(0).style.display = "block";
-                                document.getElementsByClassName('bottom').item(0).style.display = "block";
-
-                                document.getElementById('navbar').classList.remove("d-none");
-                                document.getElementById('navbar').classList.add("d-flex");
+                                document.getElementById('chart-print').style.display = "block";
+                                document.getElementById('data-items').parentElement.style.removeProperty("min-width")
+                                document.getElementById('chart-print').style.removeProperty("min-width")
 
 
                                 for (let i = 0; i < document.getElementsByClassName('action').length; i++) {
                                     document.getElementsByClassName('action').item(i).style.display = "flex";
                                     document.getElementsByClassName('action').item(i).style.justifyContent = "center";
+                                    document.getElementsByClassName('action').item(i).style.alignItems = "center";
                                 }
                                 pdf.save();
                             })
@@ -175,7 +162,7 @@ const Gantt = (props) => {
                         })
 
 
-                    }} type="primary" href={null}>Imprimer</Button>
+                    }} type="primary">Imprimer</Button>
                 </div>
             </div>
         </div>

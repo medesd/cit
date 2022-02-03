@@ -16,9 +16,9 @@ const Add = (props) => {
     const [form] = Form.useForm();
     useEffect(() => {
         axios.create().get('/api/projects/taches/' + props.id).then(ft => {
-            setState(f => ({...f, taches: ft.data}));
+            setState(f => ({...f, taches: ft.data.filter(x => x.lot === props.lot)}));
         })
-    }, [props.id])
+    }, [props.id, props.lot])
 
     const [show, setShow] = useState(false);
 

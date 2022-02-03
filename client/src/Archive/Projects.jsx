@@ -25,7 +25,7 @@ const Projects = (props) => {
             r.data === '' || setState(f => ({...f, employees: r.data}))
         )
         axios.create().get('/api/projects/archived?main=true&filter=').then(r => {
-            console.log(r);
+
             if (r.data !== "")
                 setState(f => ({...f, projects: r.data}))
         });
